@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CNN 2026</title>
+    <title>CNN 2026 PowerSlider</title>
     <style>
         /* --- デザイン設定 (CSS) --- */
         body {
             font-family: sans-serif;
             background-color: #f0f8ff;
             margin: 0;
-            padding: 10px; /* 画面端に少し余裕を持たせる */
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* 1. ナビゲーションバー (画面幅98%まで拡大) */
         .nav-container {
-            width: 98vw; /* 画面幅の98% */
+            width: 98vw;
             margin: 0 0 10px 0;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -29,12 +28,12 @@
         .nav-btn {
             background-color: #ddd;
             border: none;
-            padding: 15px 0; /* ボタンを大きく */
+            padding: 15px 0;
             cursor: pointer;
             font-weight: bold;
             border-radius: 6px;
             color: #555;
-            font-size: 16px; /* 文字サイズアップ */
+            font-size: 16px;
             transition: 0.3s;
         }
         .nav-btn:hover { background-color: #bbb; }
@@ -43,9 +42,8 @@
             color: white;
         }
 
-        /* 2. アプリ本体 (画面幅98%まで拡大) */
         .app-container {
-            width: 98vw; /* 画面幅の98% */
+            width: 98vw;
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -54,16 +52,14 @@
             margin-bottom: 30px;
         }
 
-        /* 左側のメイン画面 */
         .main-screen {
-            flex: 1; /* 残りの幅をすべて使う */
+            flex: 1;
             position: relative;
             background-color: #fff;
             aspect-ratio: 16 / 9;
             overflow: hidden;
         }
 
-        /* 画像レイヤー設定 */
         #bgLayer {
             position: absolute;
             top: 0;
@@ -85,10 +81,10 @@
             z-index: 2;
         }
 
-        /* 赤枠 (線を太く、見やすく) */
+        /* 赤枠 */
         .answer-box {
             position: absolute;
-            border: 5px solid red; /* 太く変更 */
+            border: 5px solid red;
             border-radius: 10px;
             display: none;
             background-color: rgba(255, 0, 0, 0.1);
@@ -96,27 +92,25 @@
             z-index: 10;
         }
 
-        /* 右側のサイドバー (幅を280pxに拡大) */
         .sidebar {
-            width: 280px; /* 200px -> 280px に拡大 */
+            width: 280px;
             background-color: #f5e6d3;
             padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 12px; /* 間隔を広げる */
+            gap: 12px;
             border-left: 2px solid #ddd;
         }
 
-        /* ボタン共通設定 (大きく見やすく) */
         .btn {
-            padding: 15px 5px; /* 縦幅アップ */
+            padding: 15px 5px;
             font-weight: bold;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             text-align: center;
-            font-size: 18px; /* 文字サイズアップ */
+            font-size: 18px;
             transition: opacity 0.2s;
             width: 100%;
         }
@@ -128,7 +122,6 @@
         .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
         .btn-japanese { background: linear-gradient(#ff7043, #d84315); }
 
-        /* オーディオコントロールパネル */
         .audio-controls {
             display: flex;
             justify-content: space-between;
@@ -143,7 +136,7 @@
             border: none;
             border-radius: 4px;
             width: 23%;
-            padding: 8px 0; /* 押しやすく */
+            padding: 8px 0;
             font-size: 12px;
             cursor: pointer;
         }
@@ -157,7 +150,7 @@
         }
         .btn-num {
             background: linear-gradient(#4caf50, #2e7d32);
-            font-size: 24px; /* 数字を大きく */
+            font-size: 24px;
             padding: 15px 0;
         }
         .btn-clear {
@@ -189,10 +182,10 @@
             <img id="bgLayer" src="" alt="Background">
             <img id="contentLayer" src="" alt="Content">
             
-            <div id="ans1" class="answer-box" style="top: 38%; left: 10%; width: 250px; height: 50px;"></div>
-            <div id="ans2" class="answer-box" style="top: 48%; left: 48%; width: 180px; height: 50px;"></div>
-            <div id="ans3" class="answer-box" style="top: 78%; left: 78%; width: 40px; height: 40px;"></div>
-            <div id="ans4" class="answer-box" style="top: 86%; left: 75%; width: 40px; height: 40px;"></div>
+            <div id="ans1" class="answer-box"></div>
+            <div id="ans2" class="answer-box"></div>
+            <div id="ans3" class="answer-box"></div>
+            <div id="ans4" class="answer-box"></div>
         </div>
 
         <div class="sidebar">
@@ -216,9 +209,7 @@
             
             <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
             <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
-            
             <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Sound 🎧</button>
-            
             <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
             
             <hr style="width:100%; border:0.5px dashed #ccc;">
@@ -240,6 +231,83 @@
     <audio id="audioVocab"></audio>
 
 <script>
+    // --- ★ここが設定エリアです (News 1 〜 10)★ ---
+    // Newsごとの赤枠の位置（top, left）とサイズ（width, height）を%で指定します。
+    // 数字を変更するだけで、自動的に反映されます。
+
+    const answerSettings = {
+        // --- News 1 の設定 ---
+        news1: [
+            { top: '34%', left: '10%', width: '15%', height: '5%' }, // 答え1
+            { top: '48%', left: '53%', width: '35%', height: '5%' }, // 答え2
+            { top: '80%', left: '87%', width: '3%', height: '6%' },  // 答え3
+            { top: '88%', left: '87%', width: '3%', height: '6%' }   // 答え4
+        ],
+        // --- News 2 の設定 ---
+        news2: [
+            { top: '61%', left: '8%', width: '35%', height: '5%' }, 
+            { top: '36%', left: '53%', width: '35%', height: '5%' }, 
+            { top: '78%', left: '87%', width: '4%', height: '6%' }, 
+            { top: '86%', left: '91%', width: '4%', height: '6%' }
+        ],
+        // --- News 3 の設定 ---
+        news3: [
+            { top: '48%', left: '9%', width: '17%', height: '4%' }, 
+            { top: '44%', left: '53%', width: '35%', height: '8%' }, 
+            { top: '78%', left: '89%', width: '4%', height: '6%' }, 
+            { top: '86%', left: '85%', width: '4%', height: '6%' }
+        ],
+        // --- News 4 の設定 ---
+        news4: [
+            { top: '56%', left: '7%', width: '23%', height: '4%' }, 
+            { top: '37%', left: '52%', width: '25%', height: '4%' }, 
+            { top: '72%', left: '90%', width: '4%', height: '5%' }, 
+            { top: '80%', left: '86%', width: '4%', height: '5%' }
+        ],
+        // --- News 5 の設定 ---
+        news5: [
+            { top: '48%', left: '7%', width: '10%', height: '4%' }, 
+            { top: '53%', left: '47%', width: '48%', height: '10%' }, 
+            { top: '75%', left: '88%', width: '4%', height: '6%' }, 
+            { top: '83%', left: '92%', width: '4%', height: '6%' }
+        ],
+        // --- News 6 の設定 ---
+        news6: [
+            { top: '40%', left: '7%', width: '20%', height: '5%' }, 
+            { top: '59%', left: '40%', width: '50%', height: '9%' }, 
+            { top: '78%', left: '91%', width: '4%', height: '6%' }, 
+            { top: '86%', left: '91%', width: '4%', height: '6%' }
+        ],
+        // --- News 7 の設定 ---
+        news7: [
+            { top: '59%', left: '7%', width: '40%', height: '4%' }, 
+            { top: '35%', left: '53%', width: '40%', height: '5%' }, 
+            { top: '78%', left: '87%', width: '4%', height: '6%' }, 
+            { top: '86%', left: '91%', width: '4%', height: '6%' }
+        ],
+        // --- News 8 の設定 ---
+        news8: [
+            { top: '54%', left: '7%', width: '15%', height: '4%' }, 
+            { top: '49%', left: '54%', width: '23%', height: '4%' }, 
+            { top: '72%', left: '89%', width: '4%', height: '6%' }, 
+            { top: '81%', left: '89%', width: '4%', height: '6%' }
+        ],
+        // --- News 9 の設定 ---
+        news9: [
+            { top: '43%', left: '7%', width: '30%', height: '4%' }, 
+            { top: '38%', left: '53%', width: '30%', height: '4%' }, 
+            { top: '71%', left: '92%', width: '4%', height: '6%' }, 
+            { top: '79%', left: '92%', width: '4%', height: '6%' }
+        ],
+        // --- News 10 の設定 ---
+        news10: [
+            { top: '49%', left: '7%', width: '35%', height: '5%' }, 
+            { top: '44%', left: '52%', width: '25%', height: '4.5%' }, 
+            { top: '73%', left: '90%', width: '4%', height: '6%' }, 
+            { top: '81%', left: '86%', width: '4%', height: '6%' }
+        ]
+    };
+
     let currentFolder = 'news1'; 
     let currentAudioType = null;
     let activeSlideType = null;
@@ -262,8 +330,13 @@
     const audioSlow = document.getElementById('audioSlow');
     const audioVocab = document.getElementById('audioVocab');
     
-    const answerBoxes = document.querySelectorAll('.answer-box');
     const navBtns = document.querySelectorAll('.nav-btn');
+    const answerBoxes = [
+        document.getElementById('ans1'),
+        document.getElementById('ans2'),
+        document.getElementById('ans3'),
+        document.getElementById('ans4')
+    ];
 
     window.onload = function() {
         loadLesson(currentFolder);
@@ -288,6 +361,20 @@
         
         stopAllAudio();
         clearAllAnswers();
+        
+        applyAnswerSettings(folder);
+    }
+
+    function applyAnswerSettings(folder) {
+        const settings = answerSettings[folder] || answerSettings['news1'];
+        for(let i = 0; i < 4; i++) {
+            if(settings[i]) {
+                answerBoxes[i].style.top = settings[i].top;
+                answerBoxes[i].style.left = settings[i].left;
+                answerBoxes[i].style.width = settings[i].width;
+                answerBoxes[i].style.height = settings[i].height;
+            }
+        }
     }
 
     function toggleSlide(type) {
@@ -307,7 +394,6 @@
     function toggleMainAudio(type) {
         let target = getAudioElement(type);
         if (!target) return;
-
         if (!target.paused && currentAudioType === type) {
             target.pause();
             target.currentTime = 0;
@@ -323,9 +409,7 @@
         let target = getAudioElement(type);
         if (target) {
             if (target.paused) {
-                if (currentAudioType !== type) {
-                     stopAllAudio();
-                }
+                if (currentAudioType !== type) stopAllAudio();
                 target.play();
                 currentAudioType = type;
             } else {
@@ -377,7 +461,3 @@
         });
     }
 </script>
-
-</body>
-
-</html>
