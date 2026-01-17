@@ -67,7 +67,7 @@
             object-fit: contain;
         }
 
-        /* 赤枠 (サイズも少し大きめに調整が必要かもしれません) */
+        /* 赤枠 (サイズも少し大きめに調整) */
         .answer-box {
             position: absolute;
             border: 4px solid red; /* 枠を少し太く */
@@ -132,4 +132,130 @@
 
     <div class="nav-container">
         <button class="nav-btn active" onclick="selectLesson('news1', this)">News 1</button>
-        <button class="nav
+        <button class="nav-btn" onclick="selectLesson('news2', this)">News 2</button>
+        <button class="nav-btn" onclick="selectLesson('news3', this)">News 3</button>
+        <button class="nav-btn" onclick="selectLesson('news4', this)">News 4</button>
+        <button class="nav-btn" onclick="selectLesson('news5', this)">News 5</button>
+        <button class="nav-btn" onclick="selectLesson('news6', this)">News 6</button>
+        <button class="nav-btn" onclick="selectLesson('news7', this)">News 7</button>
+        <button class="nav-btn" onclick="selectLesson('news8', this)">News 8</button>
+        <button class="nav-btn" onclick="selectLesson('news9', this)">News 9</button>
+        <button class="nav-btn" onclick="selectLesson('news10', this)">News 10</button>
+    </div>
+
+    <div class="app-container">
+        <div class="main-screen" id="screenArea">
+            <img id="displayImage" src="" alt="画像が表示されません">
+            
+            <div id="ans1" class="answer-box" style="top: 38%; left: 10%; width: 250px; height: 50px;"></div>
+            <div id="ans2" class="answer-box" style="top: 48%; left: 48%; width: 180px; height: 50px;"></div>
+            <div id="ans3" class="answer-box" style="top: 78%; left: 78%; width: 40px; height: 40px;"></div>
+            <div id="ans4" class="answer-box" style="top: 86%; left: 75%; width: 40px; height: 40px;"></div>
+        </div>
+
+        <div class="sidebar">
+            <button class="btn btn-audio-nat" onclick="playAudio('natural')">▶ Natural</button>
+            <button class="btn btn-audio-slow" onclick="playAudio('slow')">▶ Slow</button>
+            <hr style="width:100%; border:0.5px dashed #ccc;">
+            <button class="btn btn-green" onclick="changeSlide('transcript')">Script</button>
+            <button class="btn btn-green" onclick="changeSlide('newwords')">Vocabulary</button>
+            <button class="btn btn-vocab" onclick="playAudio('vocab')">Sound 🎧</button>
+            <button class="btn btn-japanese" onclick="changeSlide('japanese')">Japanese</button>
+            <hr style="width:100%; border:0.5px dashed #ccc;">
+            <button class="btn btn-green" onclick="changeSlide('compre')">Comprehension</button>
+            <div class="quiz-controls">
+                <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
+                <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
+                <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
+                <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
+            </div>
+            <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
+        </div>
+    </div>
+
+    <audio id="audioNatural"></audio>
+    <audio id="audioSlow"></audio>
+    <audio id="audioVocab"></audio>
+
+<script>
+    let currentFolder = 'news1'; 
+
+    const fileNames = {
+        main: 'main.png',
+        transcript: 'transcript.png',
+        newwords: 'newwords.png',
+        japanese: 'japanese.png',
+        compre: 'compre.png',
+        natural: 'natural.mp3',
+        slow: 'slow.mp3',
+        vocab: 'vocab.mp3'
+    };
+
+    const displayImg = document.getElementById('displayImage');
+    const audioNat = document.getElementById('audioNatural');
+    const audioSlow = document.getElementById('audioSlow');
+    const audioVocab = document.getElementById('audioVocab');
+    const answerBoxes = document.querySelectorAll('.answer-box');
+    const navBtns = document.querySelectorAll('.nav-btn');
+
+    window.onload = function() {
+        loadLesson(currentFolder);
+    };
+
+    function selectLesson(folderName, btnElement) {
+        currentFolder = folderName;
+        navBtns.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+        loadLesson(folderName);
+    }
+
+    function loadLesson(folder) {
+        // 画像と音声のパスを設定
+        displayImg.src = `${folder}/${fileNames.main}`;
+        audioNat.src = `${folder}/${fileNames.natural}`;
+        audioSlow.src = `${folder}/${fileNames.slow}`;
+        audioVocab.src = `${folder}/${fileNames.vocab}`;
+        clearAllAnswers();
+    }
+
+    function changeSlide(type) {
+        if(fileNames[type]) {
+            displayImg.src = `${currentFolder}/${fileNames[type]}`;
+        }
+        if (type !== 'compre') clearAllAnswers();
+    }
+
+    function playAudio(type) {
+        stopAllAudio();
+        let targetAudio;
+        if (type === 'natural') targetAudio = audioNat;
+        if (type === 'slow') targetAudio = audioSlow;
+        if (type === 'vocab') targetAudio = audioVocab;
+
+        if(targetAudio) {
+            targetAudio.play().catch(e => console.log("Audio play error: " + e));
+        }
+    }
+
+    function stopAllAudio() {
+        audioNat.pause(); audioNat.currentTime = 0;
+        audioSlow.pause(); audioSlow.currentTime = 0;
+        audioVocab.pause(); audioVocab.currentTime = 0;
+    }
+
+    function toggleAnswer(num) {
+        const box = document.getElementById('ans' + num);
+        if (box) {
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    function clearAllAnswers() {
+        answerBoxes.forEach(box => {
+            box.style.display = 'none';
+        });
+    }
+</script>
+
+</body>
+</html>
