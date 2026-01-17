@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndexCNN Advanced Player</title>
+    <title>IndexCNN Final Player</title>
     <style>
         /* --- デザイン設定 (CSS) --- */
         body {
@@ -47,7 +47,6 @@
         .app-container {
             width: 100%;
             max-width: 1280px;
-            /* 高さは指定せず、アスペクト比で制御する */
             background-color: white;
             display: flex;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -58,32 +57,38 @@
 
         /* 左側のメイン画面 */
         .main-screen {
-            flex: 1; /* 残りの幅をすべて使う */
+            flex: 1;
             position: relative;
             background-color: #fff;
-            aspect-ratio: 16 / 9; /* アスペクト比を16:9に固定 */
+            aspect-ratio: 16 / 9;
             overflow: hidden;
         }
 
-        /* 画像のレイヤー設定 */
-        .layer-img {
+        /* 画像レイヤー設定 */
+        
+        /* 背景レイヤー (Main画像: 常に全体表示) */
+        #bgLayer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: fill; /* 領域いっぱいに引き伸ばす */
-            display: block;
-        }
-
-        /* 背景画像 (main.png) - 下層 */
-        #bgLayer {
-            z-index: 1;
+            object-fit: fill;
+            z-index: 1; /* 一番下 */
         }
         
-        /* コンテンツ画像 (Script, Vocab等) - 上層 */
+        /* コンテンツレイヤー (Script, Vocab等: 赤枠の位置にはめ込む) */
         #contentLayer {
-            z-index: 2;
+            position: absolute;
+            /* タイトルバーの下に配置するための調整値 */
+            top: 17%;   
+            left: 2.5%; 
+            width: 95%; 
+            height: 80%;
+            
+            object-fit: fill; /* 枠いっぱいに広げる */
+            display: none;    /* 最初は非表示 */
+            z-index: 2;       /* 背景より上 */
         }
 
         /* 赤枠 (最前面) */
@@ -94,12 +99,12 @@
             display: none;
             background-color: rgba(255, 0, 0, 0.1);
             cursor: pointer;
-            z-index: 10; /* 画像より手前に表示 */
+            z-index: 10;
         }
 
-        /* 右側のサイドバー (幅を縮小) */
+        /* 右側のサイドバー */
         .sidebar {
-            width: 200px; /* 260px -> 200px に変更 */
+            width: 200px;
             background-color: #f5e6d3;
             padding: 10px;
             display: flex;
@@ -187,9 +192,9 @@
 
     <div class="app-container">
         <div class="main-screen" id="screenArea">
-            <img id="bgLayer" class="layer-img" src="" alt="">
+            <img id="bgLayer" src="" alt="Background">
             
-            <img id="contentLayer" class="layer-img" src="" alt="" style="display:none;">
+            <img id="contentLayer" src="" alt="Content">
             
             <div id="ans1" class="answer-box" style="top: 38%; left: 10%; width: 250px; height: 50px;"></div>
             <div id="ans2" class="answer-box" style="top: 48%; left: 48%; width: 180px; height: 50px;"></div>
@@ -198,34 +203,34 @@
         </div>
 
         <div class="sidebar">
-            <button class="btn btn-audio-nat" onclick="toggleAudio('natural')">▶ Natural (再生/停止)</button>
+            <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural (再生/停止)</button>
             <div class="audio-controls">
                 <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
-                <button class="ctrl-btn" onclick="pauseAudioOnly('natural')">⏸</button>
-                <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹</button>
+                <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯ Resume</button>
+                <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹ Stop</button>
                 <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
             </div>
 
-            <button class="btn btn-audio-slow" onclick="toggleAudio('slow')">▶ Slow (再生/停止)</button>
+            <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow (再生/停止)</button>
             <div class="audio-controls">
                 <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
-                <button class="ctrl-btn" onclick="pauseAudioOnly('slow')">⏸</button>
-                <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹</button>
+                <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯ Resume</button>
+                <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹ Stop</button>
                 <button class="ctrl-btn" onclick="seekAudio('slow', 5)">5s ⏩</button>
             </div>
 
             <hr style="width:100%; border:0.5px dashed #ccc;">
             
-            <button class="btn btn-green" onclick="changeSlide('transcript')">Script</button>
-            <button class="btn btn-green" onclick="changeSlide('newwords')">Vocabulary</button>
+            <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
+            <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
             
-            <button class="btn btn-vocab" onclick="toggleAudio('vocab')">Sound 🎧 (再生/停止)</button>
+            <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Sound 🎧 (再生/停止)</button>
             
-            <button class="btn btn-japanese" onclick="changeSlide('japanese')">Japanese</button>
+            <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
             
             <hr style="width:100%; border:0.5px dashed #ccc;">
             
-            <button class="btn btn-green" onclick="changeSlide('compre')">Comprehension</button>
+            <button class="btn btn-green" onclick="toggleSlide('compre')">Comprehension</button>
             
             <div class="quiz-controls">
                 <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
@@ -243,7 +248,8 @@
 
 <script>
     let currentFolder = 'news1'; 
-    let currentAudioType = null; // 現在再生中のタイプ
+    let currentAudioType = null;
+    let activeSlideType = null; // 現在表示中のスライドタイプ
 
     const fileNames = {
         main: 'main.png',
@@ -280,46 +286,54 @@
     function loadLesson(folder) {
         // 背景は常にmain.png
         bgLayer.src = `${folder}/${fileNames.main}`;
-        // コンテンツレイヤーは初期状態では非表示（またはmainと同じ）
+        
+        // コンテンツレイヤーはリセット
         contentLayer.style.display = 'none';
         contentLayer.src = ''; 
+        activeSlideType = null;
 
         // 音声ソース設定
         audioNat.src = `${folder}/${fileNames.natural}`;
         audioSlow.src = `${folder}/${fileNames.slow}`;
         audioVocab.src = `${folder}/${fileNames.vocab}`;
         
-        stopAllAudio(); // 切り替え時は停止
+        stopAllAudio();
         clearAllAnswers();
     }
 
-    function changeSlide(type) {
-        // コンテンツレイヤーに画像を表示して重ねる
-        if(fileNames[type]) {
-            contentLayer.src = `${currentFolder}/${fileNames[type]}`;
-            contentLayer.style.display = 'block';
-        } else {
-            // mainに戻す場合などは隠す
+    // --- 画像のトグル切り替え機能 ---
+    function toggleSlide(type) {
+        // 同じボタンをもう一度押した場合 -> 隠す
+        if (activeSlideType === type) {
             contentLayer.style.display = 'none';
+            activeSlideType = null;
+        } 
+        // 違うボタンを押した場合 -> 表示する
+        else {
+            if(fileNames[type]) {
+                contentLayer.src = `${currentFolder}/${fileNames[type]}`;
+                contentLayer.style.display = 'block';
+                activeSlideType = type;
+            }
         }
         
         if (type !== 'compre') clearAllAnswers();
     }
 
-    // --- 音声コントロールロジック ---
+    // --- 音声コントロール ---
 
-    // トグル再生（1回目：再生、2回目：完全停止）
-    function toggleAudio(type) {
+    // 大きなボタン用（再生/停止トグル）
+    function toggleMainAudio(type) {
         let target = getAudioElement(type);
         if (!target) return;
 
-        // すでに再生中で、かつ同じボタンを押した場合 -> 停止してリセット
+        // 再生中なら停止
         if (!target.paused && currentAudioType === type) {
             target.pause();
             target.currentTime = 0;
             currentAudioType = null;
         } 
-        // 停止中、または別の音声が再生中の場合 -> 他を止めて再生
+        // 停止中または別の音声なら再生
         else {
             stopAllAudio();
             target.play().catch(e => console.log(e));
@@ -327,11 +341,22 @@
         }
     }
 
-    // 一時停止ボタン用
-    function pauseAudioOnly(type) {
+    // 小さな一時停止ボタン用（一時停止/再開トグル）
+    function togglePauseOnly(type) {
         let target = getAudioElement(type);
-        if (target && !target.paused) {
-            target.pause();
+        if (target) {
+            if (target.paused) {
+                // 停止中なら再開（他の音声は止める）
+                // ただし完全に停止(currentTime=0)している場合は最初からになる
+                if (currentAudioType !== type) {
+                     stopAllAudio();
+                }
+                target.play();
+                currentAudioType = type;
+            } else {
+                // 再生中なら一時停止
+                target.pause();
+            }
         }
     }
 
