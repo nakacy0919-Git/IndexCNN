@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndexCNN Final Player</title>
+    <title>IndexCNN Full Screen</title>
     <style>
         /* --- デザイン設定 (CSS) --- */
         body {
             font-family: sans-serif;
             background-color: #f0f8ff;
             margin: 0;
+            padding: 10px; /* 画面端に少し余裕を持たせる */
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* 1. ナビゲーションバー */
+        /* 1. ナビゲーションバー (画面幅98%まで拡大) */
         .nav-container {
-            width: 100%;
-            max-width: 1280px; 
-            margin: 20px 0 10px 0;
+            width: 98vw; /* 画面幅の98% */
+            margin: 0 0 10px 0;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 5px;
+            gap: 8px;
         }
         
         .nav-btn {
             background-color: #ddd;
             border: none;
-            padding: 10px 0;
+            padding: 15px 0; /* ボタンを大きく */
             cursor: pointer;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 6px;
             color: #555;
-            font-size: 14px;
+            font-size: 16px; /* 文字サイズアップ */
             transition: 0.3s;
         }
         .nav-btn:hover { background-color: #bbb; }
@@ -43,21 +43,20 @@
             color: white;
         }
 
-        /* 2. アプリ本体 */
+        /* 2. アプリ本体 (画面幅98%まで拡大) */
         .app-container {
-            width: 100%;
-            max-width: 1280px;
+            width: 98vw; /* 画面幅の98% */
             background-color: white;
             display: flex;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 15px;
             overflow: hidden;
             margin-bottom: 30px;
         }
 
         /* 左側のメイン画面 */
         .main-screen {
-            flex: 1;
+            flex: 1; /* 残りの幅をすべて使う */
             position: relative;
             background-color: #fff;
             aspect-ratio: 16 / 9;
@@ -65,8 +64,6 @@
         }
 
         /* 画像レイヤー設定 */
-        
-        /* 背景レイヤー (Main画像: 常に全体表示) */
         #bgLayer {
             position: absolute;
             top: 0;
@@ -74,55 +71,52 @@
             width: 100%;
             height: 100%;
             object-fit: fill;
-            z-index: 1; /* 一番下 */
+            z-index: 1;
         }
         
-        /* コンテンツレイヤー (Script, Vocab等: 赤枠の位置にはめ込む) */
         #contentLayer {
             position: absolute;
-            /* タイトルバーの下に配置するための調整値 */
             top: 17%;   
             left: 2.5%; 
             width: 95%; 
             height: 80%;
-            
-            object-fit: fill; /* 枠いっぱいに広げる */
-            display: none;    /* 最初は非表示 */
-            z-index: 2;       /* 背景より上 */
+            object-fit: fill;
+            display: none;
+            z-index: 2;
         }
 
-        /* 赤枠 (最前面) */
+        /* 赤枠 (線を太く、見やすく) */
         .answer-box {
             position: absolute;
-            border: 4px solid red;
-            border-radius: 8px;
+            border: 5px solid red; /* 太く変更 */
+            border-radius: 10px;
             display: none;
             background-color: rgba(255, 0, 0, 0.1);
             cursor: pointer;
             z-index: 10;
         }
 
-        /* 右側のサイドバー */
+        /* 右側のサイドバー (幅を280pxに拡大) */
         .sidebar {
-            width: 200px;
+            width: 280px; /* 200px -> 280px に拡大 */
             background-color: #f5e6d3;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px; /* 間隔を広げる */
             border-left: 2px solid #ddd;
         }
 
-        /* ボタン共通設定 */
+        /* ボタン共通設定 (大きく見やすく) */
         .btn {
-            padding: 12px 5px;
+            padding: 15px 5px; /* 縦幅アップ */
             font-weight: bold;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             text-align: center;
-            font-size: 15px;
+            font-size: 18px; /* 文字サイズアップ */
             transition: opacity 0.2s;
             width: 100%;
         }
@@ -138,19 +132,19 @@
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            background-color: rgba(255,255,255,0.5);
-            padding: 4px;
-            border-radius: 4px;
+            background-color: rgba(255,255,255,0.6);
+            padding: 6px;
+            border-radius: 6px;
             margin-bottom: 5px;
         }
         .ctrl-btn {
             background-color: #555;
             color: white;
             border: none;
-            border-radius: 3px;
-            width: 22%;
-            padding: 5px 0;
-            font-size: 10px;
+            border-radius: 4px;
+            width: 23%;
+            padding: 8px 0; /* 押しやすく */
+            font-size: 12px;
             cursor: pointer;
         }
         .ctrl-btn:hover { background-color: #333; }
@@ -158,20 +152,20 @@
         .quiz-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
+            gap: 8px;
             margin-top: auto;
         }
         .btn-num {
             background: linear-gradient(#4caf50, #2e7d32);
-            font-size: 18px;
-            padding: 10px 0;
+            font-size: 24px; /* 数字を大きく */
+            padding: 15px 0;
         }
         .btn-clear {
             background-color: #aaa;
             color: white;
-            margin-top: 5px;
-            font-size: 12px;
-            padding: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            padding: 12px;
         }
     </style>
 </head>
@@ -193,7 +187,6 @@
     <div class="app-container">
         <div class="main-screen" id="screenArea">
             <img id="bgLayer" src="" alt="Background">
-            
             <img id="contentLayer" src="" alt="Content">
             
             <div id="ans1" class="answer-box" style="top: 38%; left: 10%; width: 250px; height: 50px;"></div>
@@ -203,7 +196,7 @@
         </div>
 
         <div class="sidebar">
-            <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural (再生/停止)</button>
+            <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
             <div class="audio-controls">
                 <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
                 <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯ Resume</button>
@@ -211,7 +204,7 @@
                 <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
             </div>
 
-            <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow (再生/停止)</button>
+            <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
             <div class="audio-controls">
                 <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
                 <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯ Resume</button>
@@ -224,7 +217,7 @@
             <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
             <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
             
-            <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Sound 🎧 (再生/停止)</button>
+            <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Sound 🎧</button>
             
             <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
             
@@ -249,7 +242,7 @@
 <script>
     let currentFolder = 'news1'; 
     let currentAudioType = null;
-    let activeSlideType = null; // 現在表示中のスライドタイプ
+    let activeSlideType = null;
 
     const fileNames = {
         main: 'main.png',
@@ -284,15 +277,11 @@
     }
 
     function loadLesson(folder) {
-        // 背景は常にmain.png
         bgLayer.src = `${folder}/${fileNames.main}`;
-        
-        // コンテンツレイヤーはリセット
         contentLayer.style.display = 'none';
         contentLayer.src = ''; 
         activeSlideType = null;
 
-        // 音声ソース設定
         audioNat.src = `${folder}/${fileNames.natural}`;
         audioSlow.src = `${folder}/${fileNames.slow}`;
         audioVocab.src = `${folder}/${fileNames.vocab}`;
@@ -301,66 +290,50 @@
         clearAllAnswers();
     }
 
-    // --- 画像のトグル切り替え機能 ---
     function toggleSlide(type) {
-        // 同じボタンをもう一度押した場合 -> 隠す
         if (activeSlideType === type) {
             contentLayer.style.display = 'none';
             activeSlideType = null;
-        } 
-        // 違うボタンを押した場合 -> 表示する
-        else {
+        } else {
             if(fileNames[type]) {
                 contentLayer.src = `${currentFolder}/${fileNames[type]}`;
                 contentLayer.style.display = 'block';
                 activeSlideType = type;
             }
         }
-        
         if (type !== 'compre') clearAllAnswers();
     }
 
-    // --- 音声コントロール ---
-
-    // 大きなボタン用（再生/停止トグル）
     function toggleMainAudio(type) {
         let target = getAudioElement(type);
         if (!target) return;
 
-        // 再生中なら停止
         if (!target.paused && currentAudioType === type) {
             target.pause();
             target.currentTime = 0;
             currentAudioType = null;
-        } 
-        // 停止中または別の音声なら再生
-        else {
+        } else {
             stopAllAudio();
             target.play().catch(e => console.log(e));
             currentAudioType = type;
         }
     }
 
-    // 小さな一時停止ボタン用（一時停止/再開トグル）
     function togglePauseOnly(type) {
         let target = getAudioElement(type);
         if (target) {
             if (target.paused) {
-                // 停止中なら再開（他の音声は止める）
-                // ただし完全に停止(currentTime=0)している場合は最初からになる
                 if (currentAudioType !== type) {
                      stopAllAudio();
                 }
                 target.play();
                 currentAudioType = type;
             } else {
-                // 再生中なら一時停止
                 target.pause();
             }
         }
     }
 
-    // 停止ボタン用
     function stopAudioOnly(type) {
         let target = getAudioElement(type);
         if (target) {
@@ -370,7 +343,6 @@
         }
     }
 
-    // スキップボタン用
     function seekAudio(type, seconds) {
         let target = getAudioElement(type);
         if (target) {
