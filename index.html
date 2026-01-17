@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexCNN Multi-Lesson</title>
+    <style>
+        /* --- デザイン設定 (CSS) --- */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 上部のニュース選択ボタンエリア */
+        .nav-container {
+            width: 960px;
+            margin: 20px 0 10px 0;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+        }
+        
+        .nav-btn {
+            background-color: #ddd;
+            border: none;
+            padding: 8px 0;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            color: #555;
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background-color: #bbb; }
+        
+        /* 選択中のボタンのデザイン */
+        .nav-btn.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* アプリ本体 */
+        .app-container {
+            width: 960px;
+            height: 540px;
+            background-color: white;
+            display: flex;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* 左側のメイン画面エリア */
+        .main-screen {
+            flex: 1;
+            position: relative;
+            background-color: #fff;
+        }
+
+        .main-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* 解答の赤枠 */
+        .answer-box {
+            position: absolute;
+            border: 3px solid red;
+            border-radius: 8px;
+            display: none;
+            background-color: rgba(255, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        /* 右側のサイドバー */
+        .sidebar {
+            width: 180px;
+            background-color: #f5e6d3;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-left: 2px solid #ddd;
+        }
+
+        /* ボタンスタイル */
+        .btn {
+            padding: 10px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.8; }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); }
+        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); }
+        .btn-green { background: linear-gradient(#4caf50, #2e7d32); }
+        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
+        .btn-japanese { background: linear-gradient(#ff7043, #d84315); } /* 和訳ボタン用色 */
+
+        .quiz-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: auto;
+        }
+        .btn-num {
+            background: linear-gradient(#4caf50, #2e7d32);
+            font-size: 18px;
+        }
+        .btn-clear {
+            background-color: #aaa;
+            color: white;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="selectLesson('news1', this)">News 1</button>
+        <button class="nav-btn" onclick="selectLesson('news2', this)">News 2</button>
+        <button class="nav-btn" onclick="selectLesson('news3', this)">News 3</button>
+        <button class="nav-btn" onclick="selectLesson('news4', this)">News 4</button>
+        <button class="nav-btn" onclick="selectLesson('news5', this)">News 5</button>
+        <button class="nav-btn" onclick="selectLesson('news6', this)">News 6</button>
+        <button class="nav-btn" onclick="selectLesson('news7', this)">News 7</button>
+        <button class="nav-btn" onclick="selectLesson('news8', this)">News 8</button>
+        <button class="nav-btn" onclick="selectLesson('news9', this)">News 9</button>
+        <button class="nav-btn" onclick="selectLesson('news10', this)">News 10</button>
+    </div>
+
+    <div class="app-container">
+        <div class="main-screen" id="screenArea">
+            <img id="displayImage" src="" alt="Main Screen">
+            
+            <div id="ans1" class="answer-box" style="top: 38%; left: 10%; width: 200px; height: 40px;"></div>
+            <div id="ans2" class="answer-box" style="top: 48%; left: 48%; width: 140px; height: 40px;"></div>
+            <div id="ans3" class="answer-box" style="top: 78%; left: 78%; width: 30px; height: 30px;"></div>
+            <div id="ans4" class="answer-box" style="top: 86%; left: 75%; width: 30px; height: 30px;"></div>
+        </div>
+
+        <div class="sidebar">
+            <button class="btn btn-audio-nat" onclick="playAudio('natural')">▶ Natural</button>
+            <button class="btn btn-audio-slow" onclick="playAudio('slow')">▶ Slow</button>
+            
+            <hr style="width:100%; border:0.5px dashed #ccc;">
+
+            <button class="btn btn-green" onclick="changeSlide('transcript')">Script</button>
+            <button class="btn btn-green" onclick="changeSlide('newwords')">Vocabulary</button>
+            
+            <button class="btn btn-vocab" onclick="playAudio('vocab')">Sound 🎧</button>
+
+            <button class="btn btn-japanese" onclick="changeSlide('japanese')">Japanese</button>
+
+            <hr style="width:100%; border:0.5px dashed #ccc;">
+
+            <button class="btn btn-green" onclick="changeSlide('compre')">Comprehension</button>
+
+            <div class="quiz-controls">
+                <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
+                <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
+                <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
+                <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
+            </div>
+            <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
+        </div>
+    </div>
+
+    <audio id="audioNatural"></audio>
+    <audio id="audioSlow"></audio>
+    <audio id="audioVocab"></audio>
+
+<script>
+    // --- 設定 ---
+    let currentFolder = 'news1'; 
+
+    // ファイル名の定義
+    const fileNames = {
+        main: 'main.png',
+        transcript: 'transcript.png',
+        newwords: 'newwords.png',
+        japanese: 'japanese.png', // ★追加
+        compre: 'compre.png',
+        natural: 'natural.mp3',
+        slow: 'slow.mp3',
+        vocab: 'vocab.mp3'
+    };
+
+    // 要素の取得
+    const displayImg = document.getElementById('displayImage');
+    const audioNat = document.getElementById('audioNatural');
+    const audioSlow = document.getElementById('audioSlow');
+    const audioVocab = document.getElementById('audioVocab');
+    const answerBoxes = document.querySelectorAll('.answer-box');
+    const navBtns = document.querySelectorAll('.nav-btn');
+
+    // 初期化処理
+    window.onload = function() {
+        loadLesson(currentFolder);
+    };
+
+    // 1. レッスン（フォルダ）の切り替え
+    function selectLesson(folderName, btnElement) {
+        currentFolder = folderName;
+        
+        // ボタンの色を切り替える
+        navBtns.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        loadLesson(folderName);
+    }
+
+    function loadLesson(folder) {
+        // 画像をmainに戻す
+        displayImg.src = `${folder}/${fileNames.main}`;
+        
+        // 音声ファイルのパスをセット
+        audioNat.src = `${folder}/${fileNames.natural}`;
+        audioSlow.src = `${folder}/${fileNames.slow}`;
+        audioVocab.src = `${folder}/${fileNames.vocab}`;
+
+        clearAllAnswers();
+    }
+
+    // 2. スライド（画像）切り替え機能
+    function changeSlide(type) {
+        if(fileNames[type]) {
+            displayImg.src = `${currentFolder}/${fileNames[type]}`;
+        }
+        
+        // Comprehension以外なら赤枠を消す
+        if (type !== 'compre') {
+            clearAllAnswers();
+        }
+    }
+
+    // 3. 音声再生機能
+    function playAudio(type
