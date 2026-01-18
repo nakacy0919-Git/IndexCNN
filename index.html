@@ -1,925 +1,574 @@
 <!DOCTYPE html>
-
 <html lang="ja">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CNN 2026 PowerSlider</title>
-
+    <title>CNN 2026 PowerSlider Final</title>
     <style>
-
         /* --- デザイン設定 (CSS) --- */
-
         body {
-
             font-family: sans-serif;
-
             background-color: #f0f8ff;
-
             margin: 0;
-
             padding: 10px;
-
             display: flex;
-
             flex-direction: column;
-
             align-items: center;
-
             min-height: 100vh;
-
+            /* ログイン前はスクロール禁止 */
+            overflow: hidden; 
         }
 
-
-
-        .nav-container {
-
-            width: 98vw;
-
-            margin: 0 0 10px 0;
-
-            display: grid;
-
-            grid-template-columns: repeat(10, 1fr);
-
-            gap: 8px;
-
-        }
-
-        
-
-        .nav-btn {
-
-            background-color: #ddd;
-
-            border: none;
-
-            padding: 15px 0;
-
-            cursor: pointer;
-
-            font-weight: bold;
-
-            border-radius: 6px;
-
-            color: #555;
-
-            font-size: 16px;
-
-            transition: 0.3s;
-
-        }
-
-        .nav-btn:hover { background-color: #bbb; }
-
-        .nav-btn.active {
-
-            background-color: #007bff;
-
-            color: white;
-
-        }
-
-
-
-        .app-container {
-
-            width: 98vw;
-
-            background-color: white;
-
+        /* --- パスワード画面 --- */
+        #loginOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #333;
+            z-index: 9999;
             display: flex;
-
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-
-            border-radius: 15px;
-
-            overflow: hidden;
-
-            margin-bottom: 30px;
-
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        #loginBox {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            color: #333;
+        }
+        #passInput {
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+        #loginBtn {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #loginBtn:hover { background-color: #0056b3; }
+        #errorMsg {
+            color: red;
+            margin-top: 10px;
+            display: none;
         }
 
+        /* --- メインコンテンツ --- */
+        
+        /* ナビゲーションバー */
+        .nav-container {
+            width: 98vw;
+            margin: 0 0 10px 0;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+        }
+        .nav-btn {
+            background-color: #ddd;
+            border: none;
+            padding: 15px 0;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 6px;
+            color: #555;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background-color: #bbb; }
+        .nav-btn.active {
+            background-color: #007bff;
+            color: white;
+        }
 
-
-        .main-screen {
-
-            flex: 1;
-
-            position: relative;
-
-            background-color: #fff;
-
+        /* アプリ本体 (16:9比率維持 & 画面幅98%) */
+        .app-container {
+            width: 98vw;
+            /* 高さは自動だが、アスペクト比を強制することで16:9を維持 */
+            height: auto; 
             aspect-ratio: 16 / 9;
-
+            
+            background-color: white;
+            display: flex;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 15px;
             overflow: hidden;
-
+            margin-bottom: 30px;
         }
 
-
+        /* メイン画面 */
+        .main-screen {
+            flex: 1;
+            position: relative;
+            background-color: #fff;
+            height: 100%;
+            overflow: hidden;
+        }
 
         #bgLayer {
-
             position: absolute;
-
-            top: 0;
-
-            left: 0;
-
-            width: 100%;
-
-            height: 100%;
-
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: fill;
-
             z-index: 1;
-
         }
-
-        
-
         #contentLayer {
-
             position: absolute;
-
-            top: 17%;   
-
-            left: 2.5%; 
-
-            width: 95%; 
-
-            height: 80%;
-
+            top: 17%; left: 2.5%; 
+            width: 95%; height: 80%;
             object-fit: fill;
-
             display: none;
-
             z-index: 2;
-
         }
-
-
-
-        /* 赤枠 */
 
         .answer-box {
-
             position: absolute;
-
             border: 5px solid red;
-
             border-radius: 10px;
-
             display: none;
-
             background-color: rgba(255, 0, 0, 0.1);
-
             cursor: pointer;
-
             z-index: 10;
-
         }
 
-
-
+        /* サイドバー (ご提示いただいたデザインを適用) */
         .sidebar {
-
             width: 280px;
-
             background-color: #f5e6d3;
-
-            padding: 15px;
-
+            /* 下の余白を詰めるために padding-bottom を小さく設定 */
+            padding: 15px 15px 5px 15px;
             display: flex;
-
             flex-direction: column;
-
             gap: 12px;
-
             border-left: 2px solid #ddd;
-
+            overflow-y: auto; /* スマホ横向きなどでボタンがはみ出す場合にスクロール */
         }
-
-
 
         .btn {
-
-            padding: 15px 5px;
-
+            padding: 15px 5px; /* 大きめのパディング */
             font-weight: bold;
-
             color: white;
-
             border: none;
-
             border-radius: 8px;
-
             cursor: pointer;
-
             text-align: center;
-
-            font-size: 18px;
-
+            font-size: 18px; /* 大きめのフォント */
             transition: opacity 0.2s;
-
             width: 100%;
-
+            /* 縦位置中央揃え */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
         .btn:hover { opacity: 0.8; }
-
         
-
         .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); }
-
         .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); }
-
         .btn-green { background: linear-gradient(#4caf50, #2e7d32); }
-
         .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
-
         .btn-japanese { background: linear-gradient(#ff7043, #d84315); }
 
-
-
         .audio-controls {
-
             display: flex;
-
             justify-content: space-between;
-
             background-color: rgba(255,255,255,0.6);
-
             padding: 6px;
-
             border-radius: 6px;
-
             margin-bottom: 5px;
-
+            margin-top: -5px; /* ボタンとの隙間を詰める */
         }
-
         .ctrl-btn {
-
             background-color: #555;
-
             color: white;
-
             border: none;
-
             border-radius: 4px;
-
             width: 23%;
-
             padding: 8px 0;
-
             font-size: 12px;
-
             cursor: pointer;
-
         }
-
         .ctrl-btn:hover { background-color: #333; }
-
         
-
         .quiz-controls {
-
             display: grid;
-
             grid-template-columns: 1fr 1fr;
-
             gap: 8px;
-
-            margin-top: auto;
-
+            /* margin-top: auto を削除して、Comprehensionの下に詰める */
+            margin-top: 10px; 
         }
-
         .btn-num {
-
             background: linear-gradient(#4caf50, #2e7d32);
-
             font-size: 24px;
-
             padding: 15px 0;
-
         }
-
         .btn-clear {
-
             background-color: #aaa;
-
             color: white;
-
             margin-top: 10px;
-
+            /* 下の余白を詰める */
+            margin-bottom: 5px; 
             font-size: 14px;
-
             padding: 12px;
-
         }
 
+        /* --- レスポンシブ対応 (画面サイズに合わせて調整) --- */
+        @media (max-width: 1024px) {
+            /* タブレット・小さいPC */
+            .sidebar { width: 240px; padding: 10px; }
+            .btn { font-size: 16px; padding: 12px 5px; }
+            .btn-num { font-size: 20px; padding: 10px 0; }
+        }
+
+        @media (max-height: 600px) {
+            /* スマホ横向き */
+            body { padding: 5px; }
+            .nav-container { margin-bottom: 5px; gap: 4px; }
+            .nav-btn { padding: 8px 0; font-size: 12px; }
+            
+            /* 横向き時は高さを画面に合わせる */
+            .app-container {
+                height: 85vh; 
+                width: auto;
+                aspect-ratio: auto;
+            }
+            .main-screen {
+                aspect-ratio: 16/9;
+            }
+            .sidebar {
+                width: 200px;
+                padding: 5px;
+                gap: 5px;
+            }
+            .btn { font-size: 14px; padding: 8px 0; min-height: 35px; }
+            .btn-num { font-size: 18px; padding: 8px 0; }
+            .audio-controls { padding: 2px; }
+            .ctrl-btn { padding: 4px 0; }
+        }
     </style>
-
 </head>
-
 <body>
 
-
+    <div id="loginOverlay">
+        <div id="loginBox">
+            <h2 style="margin-top:0;">Password Required</h2>
+            <p>パスワードを入力してください</p>
+            <input type="password" id="passInput" placeholder="Password">
+            <br>
+            <button id="loginBtn" onclick="checkPassword()">Enter</button>
+            <div id="errorMsg">パスワードが違います</div>
+        </div>
+    </div>
 
     <div class="nav-container">
-
         <button class="nav-btn active" onclick="selectLesson('news1', this)">News 1</button>
-
         <button class="nav-btn" onclick="selectLesson('news2', this)">News 2</button>
-
         <button class="nav-btn" onclick="selectLesson('news3', this)">News 3</button>
-
         <button class="nav-btn" onclick="selectLesson('news4', this)">News 4</button>
-
         <button class="nav-btn" onclick="selectLesson('news5', this)">News 5</button>
-
         <button class="nav-btn" onclick="selectLesson('news6', this)">News 6</button>
-
         <button class="nav-btn" onclick="selectLesson('news7', this)">News 7</button>
-
         <button class="nav-btn" onclick="selectLesson('news8', this)">News 8</button>
-
         <button class="nav-btn" onclick="selectLesson('news9', this)">News 9</button>
-
         <button class="nav-btn" onclick="selectLesson('news10', this)">News 10</button>
-
     </div>
-
-
 
     <div class="app-container">
-
         <div class="main-screen" id="screenArea">
-
             <img id="bgLayer" src="" alt="Background">
-
             <img id="contentLayer" src="" alt="Content">
-
             
-
             <div id="ans1" class="answer-box"></div>
-
             <div id="ans2" class="answer-box"></div>
-
             <div id="ans3" class="answer-box"></div>
-
             <div id="ans4" class="answer-box"></div>
-
         </div>
-
-
 
         <div class="sidebar">
-
             <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
-
             <div class="audio-controls">
-
                 <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
-
                 <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯ Resume</button>
-
                 <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹ Stop</button>
-
                 <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
-
             </div>
-
-
 
             <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
-
             <div class="audio-controls">
-
                 <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
-
                 <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯ Resume</button>
-
                 <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹ Stop</button>
-
                 <button class="ctrl-btn" onclick="seekAudio('slow', 5)">5s ⏩</button>
-
             </div>
 
-
-
             <hr style="width:100%; border:0.5px dashed #ccc;">
-
             
-
             <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
-
             <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
-
             <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Sound 🎧</button>
-
             <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
-
             
-
             <hr style="width:100%; border:0.5px dashed #ccc;">
-
             
-
             <button class="btn btn-green" onclick="toggleSlide('compre')">Comprehension</button>
-
             
-
             <div class="quiz-controls">
-
                 <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
-
                 <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
-
                 <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
-
                 <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
-
             </div>
-
             <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
-
         </div>
-
     </div>
 
-
-
     <audio id="audioNatural"></audio>
-
     <audio id="audioSlow"></audio>
-
     <audio id="audioVocab"></audio>
 
-
-
 <script>
+    // --- パスワード ---
+    const PASSWORD = "1234";
 
-    // --- ★ここが設定エリアです (News 1 〜 10)★ ---
+    function checkPassword() {
+        const input = document.getElementById('passInput').value;
+        const overlay = document.getElementById('loginOverlay');
+        const errorMsg = document.getElementById('errorMsg');
 
-    // Newsごとの赤枠の位置（top, left）とサイズ（width, height）を%で指定します。
+        if (input === PASSWORD) {
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        } else {
+            errorMsg.style.display = 'block';
+        }
+    }
 
-    // 数字を変更するだけで、自動的に反映されます。
-
-
-
+    // --- News設定 ---
     const answerSettings = {
-
-        // --- News 1 の設定 ---
-
         news1: [
-
-            { top: '34%', left: '10%', width: '15%', height: '5%' }, // 答え1
-
-            { top: '48%', left: '53%', width: '35%', height: '5%' }, // 答え2
-
-            { top: '80%', left: '87%', width: '3%', height: '6%' },  // 答え3
-
-            { top: '88%', left: '87%', width: '3%', height: '6%' }   // 答え4
-
+            { top: '34%', left: '10%', width: '15%', height: '5%' },
+            { top: '48%', left: '53%', width: '35%', height: '5%' },
+            { top: '80%', left: '87%', width: '3%', height: '6%' },
+            { top: '88%', left: '87%', width: '3%', height: '6%' }
         ],
-
-        // --- News 2 の設定 ---
-
         news2: [
-
             { top: '61%', left: '8%', width: '35%', height: '5%' }, 
-
             { top: '36%', left: '53%', width: '35%', height: '5%' }, 
-
             { top: '78%', left: '87%', width: '4%', height: '6%' }, 
-
             { top: '86%', left: '91%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 3 の設定 ---
-
         news3: [
-
             { top: '48%', left: '9%', width: '17%', height: '4%' }, 
-
             { top: '44%', left: '53%', width: '35%', height: '8%' }, 
-
             { top: '78%', left: '89%', width: '4%', height: '6%' }, 
-
             { top: '86%', left: '85%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 4 の設定 ---
-
         news4: [
-
             { top: '56%', left: '7%', width: '23%', height: '4%' }, 
-
             { top: '37%', left: '52%', width: '25%', height: '4%' }, 
-
             { top: '72%', left: '90%', width: '4%', height: '5%' }, 
-
             { top: '80%', left: '86%', width: '4%', height: '5%' }
-
         ],
-
-        // --- News 5 の設定 ---
-
         news5: [
-
             { top: '48%', left: '7%', width: '10%', height: '4%' }, 
-
             { top: '53%', left: '47%', width: '48%', height: '10%' }, 
-
             { top: '75%', left: '88%', width: '4%', height: '6%' }, 
-
             { top: '83%', left: '92%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 6 の設定 ---
-
         news6: [
-
             { top: '40%', left: '7%', width: '20%', height: '5%' }, 
-
             { top: '59%', left: '40%', width: '50%', height: '9%' }, 
-
             { top: '78%', left: '91%', width: '4%', height: '6%' }, 
-
             { top: '86%', left: '91%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 7 の設定 ---
-
         news7: [
-
             { top: '59%', left: '7%', width: '40%', height: '4%' }, 
-
             { top: '35%', left: '53%', width: '40%', height: '5%' }, 
-
             { top: '78%', left: '87%', width: '4%', height: '6%' }, 
-
             { top: '86%', left: '91%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 8 の設定 ---
-
         news8: [
-
             { top: '54%', left: '7%', width: '15%', height: '4%' }, 
-
             { top: '49%', left: '54%', width: '23%', height: '4%' }, 
-
             { top: '72%', left: '89%', width: '4%', height: '6%' }, 
-
             { top: '81%', left: '89%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 9 の設定 ---
-
         news9: [
-
             { top: '43%', left: '7%', width: '30%', height: '4%' }, 
-
             { top: '38%', left: '53%', width: '30%', height: '4%' }, 
-
             { top: '71%', left: '92%', width: '4%', height: '6%' }, 
-
             { top: '79%', left: '92%', width: '4%', height: '6%' }
-
         ],
-
-        // --- News 10 の設定 ---
-
         news10: [
-
             { top: '49%', left: '7%', width: '35%', height: '5%' }, 
-
             { top: '44%', left: '52%', width: '25%', height: '4.5%' }, 
-
             { top: '73%', left: '90%', width: '4%', height: '6%' }, 
-
             { top: '81%', left: '86%', width: '4%', height: '6%' }
-
         ]
-
     };
-
-
 
     let currentFolder = 'news1'; 
-
     let currentAudioType = null;
-
     let activeSlideType = null;
 
-
-
     const fileNames = {
-
         main: 'main.png',
-
         transcript: 'transcript.png',
-
         newwords: 'newwords.png',
-
         japanese: 'japanese.png',
-
         compre: 'compre.png',
-
         natural: 'natural.mp3',
-
         slow: 'slow.mp3',
-
         vocab: 'vocab.mp3'
-
     };
-
-
 
     const bgLayer = document.getElementById('bgLayer');
-
     const contentLayer = document.getElementById('contentLayer');
-
     
-
     const audioNat = document.getElementById('audioNatural');
-
     const audioSlow = document.getElementById('audioSlow');
-
     const audioVocab = document.getElementById('audioVocab');
-
     
-
     const navBtns = document.querySelectorAll('.nav-btn');
-
     const answerBoxes = [
-
         document.getElementById('ans1'),
-
         document.getElementById('ans2'),
-
         document.getElementById('ans3'),
-
         document.getElementById('ans4')
-
     ];
 
-
-
     window.onload = function() {
-
         loadLesson(currentFolder);
-
     };
 
-
-
     function selectLesson(folderName, btnElement) {
-
         currentFolder = folderName;
-
         navBtns.forEach(btn => btn.classList.remove('active'));
-
         btnElement.classList.add('active');
-
         loadLesson(folderName);
-
     }
-
-
 
     function loadLesson(folder) {
-
         bgLayer.src = `${folder}/${fileNames.main}`;
-
         contentLayer.style.display = 'none';
-
         contentLayer.src = ''; 
-
         activeSlideType = null;
 
-
-
         audioNat.src = `${folder}/${fileNames.natural}`;
-
         audioSlow.src = `${folder}/${fileNames.slow}`;
-
         audioVocab.src = `${folder}/${fileNames.vocab}`;
-
         
-
         stopAllAudio();
-
         clearAllAnswers();
-
-        
-
         applyAnswerSettings(folder);
-
     }
-
-
 
     function applyAnswerSettings(folder) {
-
         const settings = answerSettings[folder] || answerSettings['news1'];
-
         for(let i = 0; i < 4; i++) {
-
             if(settings[i]) {
-
                 answerBoxes[i].style.top = settings[i].top;
-
                 answerBoxes[i].style.left = settings[i].left;
-
                 answerBoxes[i].style.width = settings[i].width;
-
                 answerBoxes[i].style.height = settings[i].height;
-
             }
-
         }
-
     }
-
-
 
     function toggleSlide(type) {
-
         if (activeSlideType === type) {
-
             contentLayer.style.display = 'none';
-
             activeSlideType = null;
-
         } else {
-
             if(fileNames[type]) {
-
                 contentLayer.src = `${currentFolder}/${fileNames[type]}`;
-
                 contentLayer.style.display = 'block';
-
                 activeSlideType = type;
-
             }
-
         }
-
         if (type !== 'compre') clearAllAnswers();
-
     }
-
-
 
     function toggleMainAudio(type) {
-
         let target = getAudioElement(type);
-
         if (!target) return;
-
         if (!target.paused && currentAudioType === type) {
-
             target.pause();
-
             target.currentTime = 0;
-
             currentAudioType = null;
-
         } else {
-
             stopAllAudio();
-
             target.play().catch(e => console.log(e));
-
             currentAudioType = type;
-
         }
-
     }
-
-
 
     function togglePauseOnly(type) {
-
         let target = getAudioElement(type);
-
         if (target) {
-
             if (target.paused) {
-
                 if (currentAudioType !== type) stopAllAudio();
-
                 target.play();
-
                 currentAudioType = type;
-
             } else {
-
                 target.pause();
-
             }
-
         }
-
     }
-
-
 
     function stopAudioOnly(type) {
-
         let target = getAudioElement(type);
-
         if (target) {
-
             target.pause();
-
             target.currentTime = 0;
-
             if(currentAudioType === type) currentAudioType = null;
-
         }
-
     }
-
-
 
     function seekAudio(type, seconds) {
-
         let target = getAudioElement(type);
-
         if (target) {
-
             target.currentTime += seconds;
-
         }
-
     }
-
-
 
     function getAudioElement(type) {
-
         if (type === 'natural') return audioNat;
-
         if (type === 'slow') return audioSlow;
-
         if (type === 'vocab') return audioVocab;
-
         return null;
-
     }
-
-
 
     function stopAllAudio() {
-
         audioNat.pause(); audioNat.currentTime = 0;
-
         audioSlow.pause(); audioSlow.currentTime = 0;
-
         audioVocab.pause(); audioVocab.currentTime = 0;
-
         currentAudioType = null;
-
     }
-
-
 
     function toggleAnswer(num) {
-
         const box = document.getElementById('ans' + num);
-
         if (box) {
-
             box.style.display = (box.style.display === 'block') ? 'none' : 'block';
-
         }
-
     }
-
-
 
     function clearAllAnswers() {
-
         answerBoxes.forEach(box => {
-
             box.style.display = 'none';
-
         });
-
     }
-
 </script>
+
+</body>
+</html>
