@@ -2,21 +2,26 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CNN 2026 PowerSlide</title>
     <style>
         /* --- デザイン設定 (CSS) --- */
-        body {
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 完全スクロール禁止 */
+            margin: 0;
+            padding: 0;
             font-family: sans-serif;
             background-color: #f0f8ff;
-            margin: 0;
-            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            /* ログイン前はスクロール禁止 */
-            overflow: hidden; 
+            padding: 5px;
         }
 
         /* --- パスワード画面 --- */
@@ -41,50 +46,46 @@
             color: #333;
         }
         #passInput {
-            font-size: 18px;
+            font-size: 24px;
             padding: 10px;
             margin-top: 10px;
             border: 2px solid #ccc;
             border-radius: 5px;
-            width: 200px;
+            width: 150px;
+            text-align: center;
+            letter-spacing: 5px;
         }
-        #loginBtn {
-            font-size: 18px;
-            padding: 10px 20px;
-            margin-top: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #loginBtn:hover { background-color: #0056b3; }
         #errorMsg {
             color: red;
             margin-top: 10px;
             display: none;
+            font-weight: bold;
         }
 
         /* --- メインコンテンツ --- */
         
-        /* ナビゲーションバー */
+        /* ナビゲーションバー (高さ固定・横並び) */
         .nav-container {
-            width: 98vw;
-            margin: 0 0 10px 0;
+            width: 99%;
+            height: 8vh; /* 画面高さの8% */
+            min-height: 40px;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
+            gap: 4px;
+            margin-bottom: 5px;
+            flex-shrink: 0; /* 縮小しない */
         }
         .nav-btn {
             background-color: #ddd;
             border: none;
-            padding: 15px 0;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            border-radius: 6px;
             color: #555;
-            font-size: 16px;
+            font-size: 1.5vh; /* 高さ基準の文字サイズ */
             transition: 0.3s;
+            height: 100%;
+            padding: 0;
         }
         .nav-btn:hover { background-color: #bbb; }
         .nav-btn.active {
@@ -92,27 +93,24 @@
             color: white;
         }
 
-        /* アプリ本体 (16:9比率維持 & 画面幅98%) */
+        /* アプリ本体 (残り全ての高さを使う) */
         .app-container {
-            width: 98vw;
-            /* 高さは自動だが、アスペクト比を強制することで16:9を維持 */
-            height: auto; 
-            aspect-ratio: 16 / 9;
-            
+            width: 99%;
+            flex-grow: 1; /* 残りのスペースを埋める */
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
+            /* heightはflex-growで自動制御 */
         }
 
-        /* メイン画面 */
+        /* 左側：メイン画面 (スライド) */
         .main-screen {
-            flex: 1;
+            flex: 1; /* 横幅の余りを全て使う */
             position: relative;
-            background-color: #fff;
-            height: 100%;
+            background-color: #000;
             overflow: hidden;
         }
 
@@ -120,7 +118,7 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            object-fit: fill;
+            object-fit: fill; /* 比率無視で埋める (指定通り) */
             z-index: 1;
         }
         #contentLayer {
@@ -134,126 +132,116 @@
 
         .answer-box {
             position: absolute;
-            border: 5px solid red;
-            border-radius: 10px;
+            border: 4px solid red;
+            border-radius: 8px;
             display: none;
             background-color: rgba(255, 0, 0, 0.1);
             cursor: pointer;
             z-index: 10;
         }
 
-        /* サイドバー (ご提示いただいたデザインを適用) */
+        /* 右側：サイドバー (スクロールなし・自動伸縮) */
         .sidebar {
-            width: 230px;
+            width: 220px;
             background-color: #f5e6d3;
-            /* 下の余白を詰めるために padding-bottom を小さく設定 */
-            padding: 15px 15px 5px 15px;
+            padding: 5px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            justify-content: space-between; /* 上下に均等配置 */
             border-left: 2px solid #ddd;
-            overflow-y: auto; /* スマホ横向きなどでボタンがはみ出す場合にスクロール */
+            overflow: hidden; /* スクロール禁止 */
+            flex-shrink: 0; /* 幅を縮めない */
+        }
+
+        /* サイドバー内の各セクションを伸縮させる */
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 2px;
         }
 
         .btn {
-            padding: 15px 5px; /* 大きめのパディング */
-            font-weight: bold;
-            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            text-align: center;
-            font-size: 18px; /* 大きめのフォント */
-            transition: opacity 0.2s;
-            width: 100%;
-            /* 縦位置中央揃え */
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.2s;
+            width: 100%;
+            padding: 8px 0; /* パディングを減らす */
+            flex-grow: 1; /* 高さを埋めるように伸びる */
         }
         .btn:hover { opacity: 0.8; }
-        
-        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); }
-        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); }
-        .btn-green { background: linear-gradient(#4caf50, #2e7d32); }
-        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
-        .btn-japanese { background: linear-gradient(#ff7043, #d84315); }
 
+        /* オーディオコントロール (横並びボタン) */
         .audio-controls {
             display: flex;
             justify-content: space-between;
             background-color: rgba(255,255,255,0.6);
-            padding: 6px;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            margin-top: -5px; /* ボタンとの隙間を詰める */
+            padding: 2px;
+            border-radius: 4px;
+            margin-top: 2px;
         }
         .ctrl-btn {
             background-color: #555;
             color: white;
             border: none;
-            border-radius: 4px;
-            width: 23%;
-            padding: 8px 0;
-            font-size: 12px;
+            border-radius: 3px;
+            width: 24%;
+            padding: 6px 0;
+            font-size: 10px;
             cursor: pointer;
         }
-        .ctrl-btn:hover { background-color: #333; }
-        
-        .quiz-controls {
+
+        /* ボタンのグリッド配置 (2列にして縦幅節約) */
+        .grid-2col {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            /* margin-top: auto を削除して、Comprehensionの下に詰める */
-            margin-top: 10px; 
+            gap: 3px;
+            flex-grow: 1;
+        }
+
+        /* クイズボタン */
+        .quiz-controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            margin-top: 2px;
         }
         .btn-num {
             background: linear-gradient(#4caf50, #2e7d32);
-            font-size: 24px;
-            padding: 15px 0;
-        }
-        .btn-clear {
-            background-color: #aaa;
-            color: white;
-            margin-top: 10px;
-            /* 下の余白を詰める */
-            margin-bottom: 5px; 
-            font-size: 14px;
-            padding: 12px;
+            font-size: 18px;
+            padding: 5px 0;
         }
 
-        /* --- レスポンシブ対応 (画面サイズに合わせて調整) --- */
-        @media (max-width: 1024px) {
-            /* タブレット・小さいPC */
-            .sidebar { width: 240px; padding: 10px; }
-            .btn { font-size: 16px; padding: 12px 5px; }
-            .btn-num { font-size: 20px; padding: 10px 0; }
+        /* 色設定 */
+        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); }
+        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); }
+        .btn-green { background: linear-gradient(#4caf50, #2e7d32); font-size: 12px; }
+        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); font-size: 12px; }
+        .btn-japanese { background: linear-gradient(#ff7043, #d84315); font-size: 12px; }
+        .btn-clear { background-color: #777; font-size: 12px; margin-top: 2px; padding: 6px 0; flex-grow: 0;}
+
+        /* 区切り線 */
+        hr {
+            margin: 2px 0;
+            border: 0;
+            border-top: 1px dashed #bbb;
+            width: 100%;
         }
 
-        @media (max-height: 600px) {
-            /* スマホ横向き */
-            body { padding: 5px; }
-            .nav-container { margin-bottom: 5px; gap: 4px; }
-            .nav-btn { padding: 8px 0; font-size: 12px; }
-            
-            /* 横向き時は高さを画面に合わせる */
-            .app-container {
-                height: 85vh; 
-                width: auto;
-                aspect-ratio: auto;
-            }
-            .main-screen {
-                aspect-ratio: 16/9;
-            }
-            .sidebar {
-                width: 200px;
-                padding: 5px;
-                gap: 5px;
-            }
-            .btn { font-size: 14px; padding: 8px 0; min-height: 35px; }
-            .btn-num { font-size: 18px; padding: 8px 0; }
-            .audio-controls { padding: 2px; }
-            .ctrl-btn { padding: 4px 0; }
+        /* --- レスポンシブ調整 (スマホ横向きなど) --- */
+        @media (max-height: 500px) {
+            .nav-container { height: 30px; }
+            .sidebar { width: 180px; }
+            .btn { font-size: 11px; padding: 4px 0; }
+            .ctrl-btn { padding: 4px 0; font-size: 9px; }
+            #passInput { width: 100px; padding: 5px; font-size: 18px; }
         }
     </style>
 </head>
@@ -261,11 +249,8 @@
 
     <div id="loginOverlay">
         <div id="loginBox">
-            <h2 style="margin-top:0;">Password Required</h2>
-            <p>パスワードを入力してください</p>
-            <input type="password" id="passInput" placeholder="Password">
-            <br>
-            <button id="loginBtn" onclick="checkPassword()">Enter</button>
+            <h2 style="margin-top:0;">Password</h2>
+            <input type="password" id="passInput" placeholder="9999" maxlength="4" inputmode="numeric" oninput="checkAutoLogin(this)">
             <div id="errorMsg">パスワードが違います</div>
         </div>
     </div>
@@ -284,6 +269,7 @@
     </div>
 
     <div class="app-container">
+        
         <div class="main-screen" id="screenArea">
             <img id="bgLayer" src="" alt="Background">
             <img id="contentLayer" src="" alt="Content">
@@ -295,39 +281,48 @@
         </div>
 
         <div class="sidebar">
-            <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
-            <div class="audio-controls">
-                <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
-                <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯ Resume</button>
-                <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹ Stop</button>
-                <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
+            
+            <div class="sidebar-section" style="flex-grow: 1;">
+                <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
+                <div class="audio-controls">
+                    <button class="ctrl-btn" onclick="seekAudio('natural', -5)">-5s</button>
+                    <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯</button>
+                    <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹</button>
+                    <button class="ctrl-btn" onclick="seekAudio('natural', 5)">+5s</button>
+                </div>
             </div>
 
-            <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
-            <div class="audio-controls">
-                <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
-                <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯ Resume</button>
-                <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹ Stop</button>
-                <button class="ctrl-btn" onclick="seekAudio('slow', 5)">5s ⏩</button>
+            <div class="sidebar-section" style="flex-grow: 1;">
+                <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
+                <div class="audio-controls">
+                    <button class="ctrl-btn" onclick="seekAudio('slow', -5)">-5s</button>
+                    <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯</button>
+                    <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹</button>
+                    <button class="ctrl-btn" onclick="seekAudio('slow', 5)">+5s</button>
+                </div>
             </div>
 
-            <hr style="width:100%; border:0.5px dashed #ccc;">
-            
-            <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
-            <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
-            <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunciation 🎧</button>
-            <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
-            
-            <hr style="width:100%; border:0.5px dashed #ccc;">
-            
-            <button class="btn btn-green" onclick="toggleSlide('compre')">Comprehension</button>
-            
-            <div class="quiz-controls">
-                <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
-                <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
-                <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
-                <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
+            <hr>
+
+            <div class="grid-2col" style="flex-grow: 2;">
+                <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
+                <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocab</button>
+                <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunce</button>
+                <button class="btn btn-japanese" onclick="toggleSlide('japanese')">Japanese</button>
             </div>
+
+            <hr>
+
+            <div class="sidebar-section" style="flex-grow: 1;">
+                <button class="btn btn-green" onclick="toggleSlide('compre')">Comprehension</button>
+                <div class="quiz-controls">
+                    <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
+                    <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
+                    <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
+                    <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
+                </div>
+            </div>
+
             <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
         </div>
     </div>
@@ -337,23 +332,35 @@
     <audio id="audioVocab"></audio>
 
 <script>
-    // --- パスワード ---
-    const PASSWORD = "1234";
+    // --- 修正点: パスワード設定 ---
+    const PASSWORD = "9999";
 
-    function checkPassword() {
-        const input = document.getElementById('passInput').value;
-        const overlay = document.getElementById('loginOverlay');
+    // --- 修正点: 自動ログイン機能 ---
+    function checkAutoLogin(inputElement) {
+        const val = inputElement.value;
         const errorMsg = document.getElementById('errorMsg');
 
-        if (input === PASSWORD) {
-            overlay.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        } else {
-            errorMsg.style.display = 'block';
+        // 入力があるたびにエラーメッセージは消す
+        errorMsg.style.display = 'none';
+
+        // 4桁になったら判定
+        if (val.length === 4) {
+            if (val === PASSWORD) {
+                // 正解：オーバーレイを消す
+                document.getElementById('loginOverlay').style.display = 'none';
+                // キーボードを閉じるためにフォーカスを外す
+                inputElement.blur();
+            } else {
+                // 不正解：エラーを表示して入力を空にする
+                errorMsg.style.display = 'block';
+                inputElement.value = ""; 
+            }
         }
     }
 
-    // --- News設定 ---
+    // --- 以下、既存ロジック ---
+
+    // News設定 (座標データ)
     const answerSettings = {
         news1: [
             { top: '34%', left: '10%', width: '15%', height: '5%' },
@@ -448,6 +455,8 @@
     ];
 
     window.onload = function() {
+        // パスワード入力にフォーカスを当てる（任意）
+        // document.getElementById('passInput').focus();
         loadLesson(currentFolder);
     };
 
@@ -571,8 +580,4 @@
 </script>
 
 </body>
-
 </html>
-
-
-
