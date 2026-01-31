@@ -48,7 +48,7 @@
         /* --- ナビゲーションバー --- */
         .nav-container {
             width: 99%;
-            height: 4vh; /* 少し高さを確保 */
+            height: 4vh;
             min-height: 30px;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -58,30 +58,32 @@
         }
         .nav-btn {
             background-color: #ddd;
-            border: none;
+            border: 1px solid #fff; /* 白枠 */
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             color: #333;
-            font-size: clamp(10px, 1.8vh, 16px); /* サイズ自動調整 */
+            font-size: clamp(10px, 1.8vh, 16px);
             transition: 0.3s;
             height: 100%;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            white-space: nowrap; /* 折り返し禁止 */
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .nav-btn:hover { background-color: #bbb; }
         .nav-btn.active {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             color: white;
+            border: 1px solid white;
         }
 
         /* --- アプリ本体レイアウト --- */
         .app-container {
             width: 99%;
-            flex-grow: 1; /* 残りの高さを埋める */
+            flex-grow: 1;
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -148,11 +150,11 @@
             min-width: 200px;
             max-width: 60%;
             background-color: #f5e6d3;
-            padding: 8px;
+            padding: 12px; /* パディング少しアップ */
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* 上下に分散させて埋める */
-            gap: 5px;
+            justify-content: flex-start;
+            gap: 15px; /* ボタン間隔を広げる */
             overflow-y: auto; 
             overflow-x: hidden;
             flex-shrink: 0;
@@ -163,132 +165,137 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 3px;
-            flex-shrink: 1; /* 縮小可能にする */
+            gap: 8px; /* グループ内も少し広げる */
+            flex-shrink: 1;
         }
 
-        /* 共通ボタンスタイル */
+        /* 共通ボタンスタイル (おしゃれグラデ + 白枠) */
         .btn {
-            border: none;
-            border-radius: 6px;
+            border: 2px solid white; /* 白枠 */
+            border-radius: 8px;
             cursor: pointer;
             color: white;
-            font-weight: 900; /* 極太 */
-            font-size: clamp(12px, 2vh, 18px); /* 画面に合わせて変動 */
+            font-weight: 900;
+            font-size: clamp(14px, 2.2vh, 18px); /* 文字大きく */
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
             width: 100%;
-            padding: 8px 0;
-            white-space: nowrap; /* はみ出し防止 */
+            padding: 10px 0;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* 影 */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
-        .btn:hover { opacity: 0.8; }
+        .btn:hover { 
+            opacity: 0.9; 
+            transform: translateY(-1px);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
         /* オーディオ操作エリア */
         .audio-wrapper {
-            background-color: rgba(255,255,255,0.5);
-            border-radius: 6px;
-            padding: 4px;
-            margin-bottom: 2px;
-            flex-shrink: 1;
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 5px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
         }
         
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
-            gap: 4px;
+            margin-top: 6px;
+            gap: 6px;
         }
         
+        /* 制御ボタン (Rewind, Forward) */
         .ctrl-btn {
-            background-color: #555;
+            background: linear-gradient(135deg, #555, #333);
             color: white;
-            border: none;
-            border-radius: 4px;
+            border: 1px solid white;
+            border-radius: 6px;
             flex: 1;
-            padding: 6px 0;
-            font-size: clamp(10px, 1.5vh, 14px);
+            padding: 8px 0;
+            font-size: clamp(11px, 1.6vh, 14px);
             cursor: pointer;
             font-weight: bold;
             white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
-        .play-btn {
+        /* 完全停止ボタン (グレー) */
+        .stop-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d); /* おしゃれなグレー */
             flex: 1.5;
-            background: linear-gradient(#007bff, #0056b3); /* 青 */
         }
 
         /* ループ用ボタン */
         .loop-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
-            gap: 4px;
+            margin-top: 6px;
+            gap: 6px;
         }
         .loop-btn {
-            background-color: #888;
+            background: linear-gradient(135deg, #999, #777);
             color: white;
-            border: none;
-            border-radius: 4px;
+            border: 1px solid white;
+            border-radius: 6px;
             flex: 1;
-            padding: 4px 0;
-            font-size: clamp(10px, 1.5vh, 14px);
+            padding: 6px 0;
+            font-size: clamp(11px, 1.6vh, 14px);
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         /* ループ設定時の色（パステルピンク） */
         .loop-active {
-            background-color: #ffb6c1 !important; /* パステルピンク */
-            color: #d32f2f !important; /* 文字は見やすく赤系 */
-            border: 1px solid #ff69b4;
+            background: linear-gradient(135deg, #ffb6c1, #ff69b4) !important;
+            color: #fff !important;
+            border: 2px solid #fff;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
         }
 
-        /* クイズ番号ボタン */
+        /* クイズ番号ボタン (2x2) */
         .quiz-controls {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-            margin-top: 2px;
+            grid-template-columns: 1fr 1fr; /* 2列 */
+            gap: 8px;
+            margin-top: 5px;
         }
         .btn-num {
-            background: linear-gradient(#4caf50, #2e7d32);
-            font-size: 20px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            font-size: 22px;
             font-weight: bold;
-            padding: 6px 0;
-            border-radius: 4px;
+            padding: 12px 0;
+            border-radius: 6px;
             color: white;
-            border: none;
+            border: 2px solid white;
             cursor: pointer;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
 
-        /* --- 色設定 --- */
-        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); padding: 5px 0; font-size: clamp(14px, 2vh, 20px); cursor: default; }
-        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); padding: 5px 0; font-size: clamp(14px, 2vh, 20px); cursor: default; }
+        /* --- 各ボタンの色設定 (グラデーション) --- */
+        /* Natural/Slow (再生ボタン兼任) */
+        .btn-audio-nat { background: linear-gradient(135deg, #8bc34a, #558b2f); padding: 12px 0; font-size: 18px; }
+        .btn-audio-slow { background: linear-gradient(135deg, #ffca28, #ff8f00); padding: 12px 0; font-size: 18px; }
         
-        .btn-green { background: linear-gradient(#4caf50, #2e7d32); margin-bottom: 2px;}
-        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); margin-bottom: 2px;}
-        .btn-japanese { background: linear-gradient(#ff7043, #d84315); margin-bottom: 2px;}
-        .btn-compre { background: linear-gradient(#4caf50, #2e7d32); }
+        .btn-green { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+        .btn-vocab { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .btn-japanese { background: linear-gradient(135deg, #ff7043, #d84315); }
+        .btn-compre { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
         
-        /* All Clear と Reading Coach */
-        .btn-clear { background-color: #666; font-size: 14px; padding: 10px 0; margin-top: 5px; }
-        .btn-coach { background: linear-gradient(#9c27b0, #7b1fa2); font-size: 14px; padding: 10px 0; margin-top: 2px; }
-
-        /* スコア表示 */
-        #fluency-score {
-            text-align: center;
-            font-weight: bold;
-            color: #333;
-            margin-top: 2px;
-            font-size: 14px;
-            min-height: 20px;
-        }
+        .btn-clear { background: linear-gradient(135deg, #7f8c8d, #566573); font-size: 16px; padding: 12px 0; margin-top: 10px; }
 
         hr {
-            margin: 2px 0;
+            margin: 10px 0;
             border: 0;
             border-top: 1px dashed #bbb;
             width: 100%;
@@ -297,15 +304,14 @@
         /* --- レスポンシブ (スマホ横向き時) --- */
         @media (max-height: 500px) {
             .nav-container { height: 12%; }
-            .sidebar { padding: 4px; gap: 2px; width: 220px;}
-            .btn { padding: 4px 0; font-size: 12px; }
-            .audio-wrapper { padding: 2px; margin-bottom: 2px; }
-            .audio-controls { margin-top: 2px; }
-            .ctrl-btn, .loop-btn { padding: 3px 0; font-size: 10px; }
-            .btn-num { font-size: 14px; padding: 3px 0; }
-            .btn-audio-nat, .btn-audio-slow { font-size: 14px; padding: 2px 0; }
-            /* ボタンがはみ出さないようにflex縮小を許可 */
-            .sidebar-group { gap: 1px; }
+            .sidebar { padding: 5px; gap: 8px; width: 220px;}
+            .btn { padding: 6px 0; font-size: 14px; border-width: 1.5px; }
+            .audio-wrapper { padding: 4px; margin-bottom: 4px; }
+            .audio-controls { margin-top: 4px; }
+            .ctrl-btn, .loop-btn { padding: 4px 0; font-size: 11px; }
+            .btn-num { font-size: 16px; padding: 6px 0; }
+            .btn-audio-nat, .btn-audio-slow { font-size: 16px; padding: 8px 0; }
+            .sidebar-group { gap: 4px; }
         }
     </style>
 </head>
@@ -347,11 +353,11 @@
             <div class="sidebar-group">
                 
                 <div class="audio-wrapper">
-                    <div class="btn btn-audio-nat">Natural</div>
+                    <button class="btn btn-audio-nat" id="btn-play-nat" onclick="togglePlayPause('natural')">Natural ▶</button>
                     <div class="audio-controls">
-                        <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪</button>
-                        <button class="ctrl-btn play-btn" id="btn-play-nat" onclick="togglePlayPause('natural')">再生/一時停止</button>
-                        <button class="ctrl-btn" onclick="seekAudio('natural', 5)">⏩</button>
+                        <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
+                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('natural')">■ Stop</button>
+                        <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
                     </div>
                     <div class="loop-controls">
                         <button id="btn-nat-start" class="loop-btn" onclick="setLoopStart('natural')">Start</button>
@@ -361,11 +367,11 @@
                 </div>
 
                 <div class="audio-wrapper">
-                    <div class="btn btn-audio-slow">Slow</div>
+                    <button class="btn btn-audio-slow" id="btn-play-slow" onclick="togglePlayPause('slow')">Slow ▶</button>
                     <div class="audio-controls">
-                        <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪</button>
-                        <button class="ctrl-btn play-btn" id="btn-play-slow" onclick="togglePlayPause('slow')">再生/一時停止</button>
-                        <button class="ctrl-btn" onclick="seekAudio('slow', 5)">⏩</button>
+                        <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
+                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('slow')">■ Stop</button>
+                        <button class="ctrl-btn" onclick="seekAudio('slow', 5)">5s ⏩</button>
                     </div>
                     <div class="loop-controls">
                         <button id="btn-slow-start" class="loop-btn" onclick="setLoopStart('slow')">Start</button>
@@ -398,8 +404,6 @@
 
             <div class="sidebar-group">
                 <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
-                <button class="btn btn-coach" id="btn-coach" onclick="toggleReadingCoach()">🎤 Reading Coach</button>
-                <div id="fluency-score"></div>
             </div>
         </div>
     </div>
@@ -577,8 +581,6 @@
         stopAllAudio();
         clearAllAnswers();
         applyAnswerSettings(folder);
-        // Reset Fluency
-        document.getElementById('fluency-score').innerHTML = "";
     }
 
     function applyAnswerSettings(folder) {
@@ -661,12 +663,22 @@
     function updatePlayButtonUI(type, isPlaying) {
         const btn = document.getElementById(`btn-play-${type}`);
         if (!btn) return;
+        
+        const label = type === 'natural' ? 'Natural' : 'Slow';
+        
         if (isPlaying) {
-            btn.innerHTML = "停止 ■";
-            btn.style.background = "#808080"; // グレー
+            btn.innerHTML = `${label} ⏸`;
+            // 再生中はアクティブなグラデーション
+            btn.style.background = (type === 'natural') 
+                ? "linear-gradient(135deg, #7cb342, #558b2f)" 
+                : "linear-gradient(135deg, #ffb300, #ff8f00)";
+            btn.style.border = "2px solid #fff";
         } else {
-            btn.innerHTML = "再生/一時停止";
-            btn.style.background = "linear-gradient(#007bff, #0056b3)";
+            btn.innerHTML = `${label} ▶`;
+            // 停止中は元のグラデーション
+            btn.style.background = (type === 'natural')
+                ? "linear-gradient(135deg, #8bc34a, #558b2f)"
+                : "linear-gradient(135deg, #ffca28, #ff8f00)";
         }
     }
 
@@ -682,6 +694,16 @@
         if (type === 'slow') return audioSlow;
         if (type === 'vocab') return audioVocab;
         return null;
+    }
+
+    function stopAudioOnly(type) {
+        let target = getAudioElement(type);
+        if (target) {
+            target.pause();
+            target.currentTime = 0;
+            if(currentAudioType === type) currentAudioType = null;
+            updatePlayButtonUI(type, false);
+        }
     }
 
     function stopAllAudio() {
@@ -709,8 +731,6 @@
         contentLayer.style.display = 'none';
         contentLayer.src = '';
         activeSlideType = null;
-        // スコアもクリア
-        document.getElementById('fluency-score').innerHTML = "";
     }
 
     function setLoopStart(type) {
@@ -746,69 +766,6 @@
         if (audio.currentTime >= loopStates[type].end) {
             audio.currentTime = loopStates[type].start;
             if(audio.paused) audio.play();
-        }
-    }
-
-    // --- Reading Coach Functionality ---
-    let recognition = null;
-    let isRecording = false;
-
-    // ブラウザの互換性チェック
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US'; // 英語
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        recognition.onstart = function() {
-            isRecording = true;
-            document.getElementById('btn-coach').innerHTML = "🔴 Listening... (Click to Stop)";
-            document.getElementById('btn-coach').style.background = "#ff5252";
-            document.getElementById('fluency-score').innerHTML = "";
-        };
-
-        recognition.onend = function() {
-            isRecording = false;
-            document.getElementById('btn-coach').innerHTML = "🎤 Reading Coach";
-            document.getElementById('btn-coach').style.background = "linear-gradient(#9c27b0, #7b1fa2)";
-        };
-
-        recognition.onresult = function(event) {
-            const result = event.results[0][0];
-            const transcript = result.transcript;
-            const confidence = result.confidence; // 0.0 - 1.0
-
-            // 簡易的なスコア計算 (信頼度ベース)
-            let score = Math.round(confidence * 100);
-            
-            // 発話が極端に短い場合はスコアを下げる調整
-            if (transcript.length < 10) score = Math.min(score, 50);
-
-            let msg = `Fluency Score: <span style="color:red; font-size:18px;">${score}%</span>`;
-            document.getElementById('fluency-score').innerHTML = msg;
-        };
-
-        recognition.onerror = function(event) {
-            isRecording = false;
-            document.getElementById('btn-coach').innerHTML = "🎤 Reading Coach";
-            document.getElementById('fluency-score').innerHTML = "Error: " + event.error;
-        };
-    } else {
-        document.getElementById('btn-coach').style.display = 'none'; // 非対応なら隠す
-    }
-
-    function toggleReadingCoach() {
-        if (!recognition) {
-            alert("Your browser does not support Speech Recognition.");
-            return;
-        }
-        
-        if (isRecording) {
-            recognition.stop();
-        } else {
-            // 他の音声を止める
-            stopAllAudio();
-            recognition.start();
         }
     }
 </script>
