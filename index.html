@@ -26,11 +26,11 @@
 
         /* --- 画面の向き警告（スマホ縦持ち用） --- */
         #portraitWarning {
-            display: none; /* デフォルトは非表示 */
+            display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: #e0e0e0; /* 薄いグレー */
+            background-color: #e0e0e0;
             z-index: 20000;
             flex-direction: column;
             justify-content: center;
@@ -39,9 +39,7 @@
             color: #555;
         }
         #portraitWarning h2 { font-size: 24px; margin-bottom: 10px; }
-        #portraitWarning p { font-size: 16px; }
-
-        /* 画面の高さの方が幅より大きい場合（縦向き）に表示 */
+        
         @media screen and (orientation: portrait) {
             #portraitWarning { display: flex; }
             .nav-container, .app-container { display: none !important; }
@@ -50,8 +48,8 @@
         /* --- ナビゲーションバー (News 1-10) --- */
         .nav-container {
             width: 99%;
-            height: 5vh; /* 高さを半分程度に縮小 (以前は8vh) */
-            min-height: 35px;
+            height: 3.5vh; /* 高さをさらに縮小 (以前は5vh) */
+            min-height: 25px;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 4px;
@@ -64,8 +62,8 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            color: #333; /* 文字色を濃く */
-            font-size: 1.8vh; /* 文字サイズを大きく */
+            color: #333;
+            font-size: 1.6vh; /* 高さにあわせて調整 */
             transition: 0.3s;
             height: 100%;
             padding: 0;
@@ -82,7 +80,7 @@
         /* --- アプリ本体レイアウト --- */
         .app-container {
             width: 99%;
-            flex-grow: 1; /* 残りの高さを埋める */
+            flex-grow: 1;
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -91,7 +89,7 @@
             margin-bottom: 5px;
         }
 
-        /* 左側：メイン画面 (スライド) */
+        /* 左側：メイン画面 */
         .main-screen {
             flex: 1;
             position: relative;
@@ -127,23 +125,24 @@
 
         /* --- 右側：サイドバー --- */
         .sidebar {
-            width: 240px; /* 少し幅を確保 */
+            width: 240px;
             background-color: #f5e6d3;
-            padding: 5px;
+            padding: 10px; /* パディングを少し広げて見やすく */
             display: flex;
             flex-direction: column;
-            /* 上下に均等配置せず、上から詰めるがflex-growで調整 */
+            justify-content: flex-start; /* 上詰め配置 */
+            gap: 15px; /* 各グループ間のスペース */
             border-left: 2px solid #ddd;
             overflow: hidden; 
             flex-shrink: 0;
         }
 
-        /* 各セクションごとのラッパー */
+        /* グループごとのコンテナ */
         .sidebar-group {
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            margin-bottom: 4px;
+            gap: 3px; /* グループ内のボタン間隔は狭く */
         }
 
         .btn {
@@ -152,13 +151,13 @@
             cursor: pointer;
             color: white;
             font-weight: bold;
-            font-size: 16px; /* 文字サイズ大 */
+            font-size: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: opacity 0.2s;
             width: 100%;
-            padding: 6px 0; /* パディング調整 */
+            padding: 8px 0; /* 適度な押しやすさ */
         }
         .btn:hover { opacity: 0.8; }
 
@@ -166,12 +165,12 @@
         .audio-wrapper {
             background-color: rgba(255,255,255,0.4);
             border-radius: 6px;
-            padding: 3px;
+            padding: 4px;
         }
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .ctrl-btn {
             background-color: #555;
@@ -180,7 +179,7 @@
             border-radius: 3px;
             width: 24%;
             padding: 5px 0;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
         }
 
@@ -188,32 +187,35 @@
         .quiz-controls {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 3px;
+            gap: 4px;
             margin-top: 2px;
         }
         .btn-num {
             background: linear-gradient(#4caf50, #2e7d32);
             font-size: 18px;
-            padding: 4px 0;
+            padding: 5px 0;
+            border-radius: 4px;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
+        .btn-num:hover { opacity: 0.8; }
 
         /* --- 色設定 --- */
-        /* Natural/Slow: 高さが出過ぎないよう調整 */
-        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); padding: 8px 0; font-size: 18px; }
-        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); padding: 8px 0; font-size: 18px; }
+        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); padding: 8px 0; font-size: 16px; }
+        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); padding: 8px 0; font-size: 16px; }
         
-        /* 中段ボタン: 縦に並ぶためシンプルに */
-        .btn-green { background: linear-gradient(#4caf50, #2e7d32); margin-bottom: 2px; font-size: 16px; padding: 10px 0; }
-        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); margin-bottom: 2px; font-size: 16px; padding: 10px 0; }
-        .btn-japanese { background: linear-gradient(#ff7043, #d84315); margin-bottom: 2px; font-size: 16px; padding: 10px 0; }
+        .btn-green { background: linear-gradient(#4caf50, #2e7d32); }
+        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
+        .btn-japanese { background: linear-gradient(#ff7043, #d84315); }
         
-        /* Comprehension: 高さを抑える */
-        .btn-compre { background: linear-gradient(#4caf50, #2e7d32); font-size: 16px; padding: 6px 0; }
+        .btn-compre { background: linear-gradient(#4caf50, #2e7d32); }
 
-        .btn-clear { background-color: #777; font-size: 14px; margin-top: auto; padding: 10px 0; }
+        .btn-clear { background-color: #777; font-size: 14px; padding: 10px 0; margin-top: 10px; }
 
+        /* 区切り線 */
         hr {
-            margin: 3px 0;
+            margin: 0;
             border: 0;
             border-top: 1px dashed #bbb;
             width: 100%;
@@ -223,13 +225,12 @@
         @media (max-height: 500px) {
             .nav-container { height: 12%; }
             .nav-btn { font-size: 12px; }
-            .sidebar { width: 180px; }
-            .btn { font-size: 12px; padding: 4px 0; }
-            .btn-audio-nat, .btn-audio-slow { font-size: 14px; padding: 4px 0; }
-            .ctrl-btn { padding: 2px 0; font-size: 9px; }
-            .btn-num { font-size: 14px; padding: 2px 0; }
-            /* スマホ横向きで縦スペースが足りない場合の調整 */
-            .sidebar { overflow-y: auto; } /* どうしても入らない場合はスクロール許可 */
+            .sidebar { width: 180px; gap: 8px; padding: 5px; }
+            .btn { font-size: 12px; padding: 5px 0; }
+            .btn-audio-nat, .btn-audio-slow { font-size: 13px; padding: 5px 0; }
+            .ctrl-btn { padding: 3px 0; font-size: 9px; }
+            .btn-num { font-size: 14px; padding: 3px 0; }
+            .sidebar { overflow-y: auto; } 
         }
     </style>
 </head>
@@ -267,29 +268,31 @@
 
         <div class="sidebar">
             
-            <div class="audio-wrapper">
-                <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
-                <div class="audio-controls">
-                    <button class="ctrl-btn" onclick="seekAudio('natural', -5)">-5s</button>
-                    <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯</button>
-                    <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹</button>
-                    <button class="ctrl-btn" onclick="seekAudio('natural', 5)">+5s</button>
+            <div class="sidebar-group">
+                <div class="audio-wrapper">
+                    <button class="btn btn-audio-nat" onclick="toggleMainAudio('natural')">▶ Natural</button>
+                    <div class="audio-controls">
+                        <button class="ctrl-btn" onclick="seekAudio('natural', -5)">-5s</button>
+                        <button class="ctrl-btn" onclick="togglePauseOnly('natural')">⏯</button>
+                        <button class="ctrl-btn" onclick="stopAudioOnly('natural')">⏹</button>
+                        <button class="ctrl-btn" onclick="seekAudio('natural', 5)">+5s</button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="audio-wrapper" style="margin-top: 4px;">
-                <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
-                <div class="audio-controls">
-                    <button class="ctrl-btn" onclick="seekAudio('slow', -5)">-5s</button>
-                    <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯</button>
-                    <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹</button>
-                    <button class="ctrl-btn" onclick="seekAudio('slow', 5)">+5s</button>
+                <div class="audio-wrapper">
+                    <button class="btn btn-audio-slow" onclick="toggleMainAudio('slow')">▶ Slow</button>
+                    <div class="audio-controls">
+                        <button class="ctrl-btn" onclick="seekAudio('slow', -5)">-5s</button>
+                        <button class="ctrl-btn" onclick="togglePauseOnly('slow')">⏯</button>
+                        <button class="ctrl-btn" onclick="stopAudioOnly('slow')">⏹</button>
+                        <button class="ctrl-btn" onclick="seekAudio('slow', 5)">+5s</button>
+                    </div>
                 </div>
             </div>
 
             <hr>
 
-            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-evenly;">
+            <div class="sidebar-group">
                 <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
                 <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
                 <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunciation 🎧</button>
@@ -301,15 +304,18 @@
             <div class="sidebar-group">
                 <button class="btn btn-compre" onclick="toggleSlide('compre')">Comprehension</button>
                 <div class="quiz-controls">
-                    <button class="btn btn-num" onclick="toggleAnswer(1)">1</button>
-                    <button class="btn btn-num" onclick="toggleAnswer(2)">2</button>
-                    <button class="btn btn-num" onclick="toggleAnswer(3)">3</button>
-                    <button class="btn btn-num" onclick="toggleAnswer(4)">4</button>
+                    <button class="btn-num" onclick="toggleAnswer(1)">1</button>
+                    <button class="btn-num" onclick="toggleAnswer(2)">2</button>
+                    <button class="btn-num" onclick="toggleAnswer(3)">3</button>
+                    <button class="btn-num" onclick="toggleAnswer(4)">4</button>
                 </div>
             </div>
 
-            <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
-        </div>
+            <div class="sidebar-group" style="margin-top: 10px;">
+                <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
+            </div>
+
+            </div>
     </div>
 
     <audio id="audioNatural"></audio>
@@ -451,18 +457,15 @@
 
     function toggleSlide(type) {
         if (activeSlideType === type) {
-            // 同じボタンを押したら消す
             contentLayer.style.display = 'none';
             activeSlideType = null;
         } else {
-            // 違うボタンなら表示切り替え
             if(fileNames[type]) {
                 contentLayer.src = `${currentFolder}/${fileNames[type]}`;
                 contentLayer.style.display = 'block';
                 activeSlideType = type;
             }
         }
-        // Comprehension以外を選んだ場合は、赤枠（答え）を一旦消す仕様とする（任意）
         if (type !== 'compre') hideAnswerBoxes();
     }
 
@@ -536,13 +539,8 @@
         }
     }
 
-    // --- ALL CLEAR 機能の修正 ---
-    // 緑枠（contentLayer）と赤枠（answerBoxes）全てを消して初期状態に戻す
     function clearAllAnswers() {
-        // 赤枠を消す
         hideAnswerBoxes();
-        
-        // 緑枠（スライドコンテンツ）を消す
         contentLayer.style.display = 'none';
         contentLayer.src = '';
         activeSlideType = null;
