@@ -48,8 +48,8 @@
         /* --- ナビゲーションバー --- */
         .nav-container {
             width: 99%;
-            height: 3.5vh;
-            min-height: 25px;
+            height: 4vh; /* 少し高さを確保 */
+            min-height: 30px;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 4px;
@@ -63,13 +63,14 @@
             cursor: pointer;
             font-weight: bold;
             color: #333;
-            font-size: 1.6vh;
+            font-size: clamp(10px, 1.8vh, 16px); /* サイズ自動調整 */
             transition: 0.3s;
             height: 100%;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            white-space: nowrap; /* 折り返し禁止 */
         }
         .nav-btn:hover { background-color: #bbb; }
         .nav-btn.active {
@@ -80,25 +81,24 @@
         /* --- アプリ本体レイアウト --- */
         .app-container {
             width: 99%;
-            flex-grow: 1;
+            flex-grow: 1; /* 残りの高さを埋める */
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 5px;
-            position: relative; /* リサイズハンドルのため */
+            position: relative; 
         }
 
         /* 左側：メイン画面 */
         .main-screen {
-            /* flex: 1 はJSで制御するため削除し、初期幅を設定 */
             flex-grow: 1;
-            width: 0; /* flex-growで埋める */
+            width: 0;
             position: relative;
             background-color: #000;
             overflow: hidden;
-            min-width: 20%; /* 最小幅 */
+            min-width: 20%;
         }
 
         #bgLayer {
@@ -127,9 +127,9 @@
             z-index: 10;
         }
 
-        /* --- リサイズハンドル (調整バー) --- */
+        /* --- リサイズハンドル --- */
         #drag-handle {
-            width: 16px; /* 掴みやすい幅 */
+            width: 12px;
             background-color: #ccc;
             cursor: col-resize;
             display: flex;
@@ -137,55 +137,51 @@
             align-items: center;
             flex-shrink: 0;
             z-index: 100;
-            touch-action: none; /* スマホでのスクロール防止 */
+            touch-action: none;
             border-left: 1px solid #bbb;
             border-right: 1px solid #bbb;
-        }
-        /* ハンドルの中の飾り線 */
-        #drag-handle::after {
-            content: "";
-            width: 4px;
-            height: 30px;
-            border-left: 2px solid #888;
-            border-right: 2px solid #888;
         }
 
         /* --- 右側：サイドバー --- */
         .sidebar {
-            width: 260px; /* 初期幅 */
-            min-width: 150px; /* 最小幅 */
+            width: 280px; 
+            min-width: 200px;
             max-width: 60%;
             background-color: #f5e6d3;
-            padding: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            gap: 15px;
-            overflow-y: auto; /* コンテンツが多い場合はスクロール */
+            justify-content: space-between; /* 上下に分散させて埋める */
+            gap: 5px;
+            overflow-y: auto; 
             overflow-x: hidden;
             flex-shrink: 0;
         }
 
+        /* グループごとのコンテナ */
         .sidebar-group {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 3px;
+            flex-shrink: 1; /* 縮小可能にする */
         }
 
+        /* 共通ボタンスタイル */
         .btn {
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             color: white;
-            font-weight: bold;
-            font-size: 15px;
+            font-weight: 900; /* 極太 */
+            font-size: clamp(12px, 2vh, 18px); /* 画面に合わせて変動 */
             display: flex;
             justify-content: center;
             align-items: center;
             transition: opacity 0.2s;
             width: 100%;
-            padding: 10px 0;
+            padding: 8px 0;
+            white-space: nowrap; /* はみ出し防止 */
         }
         .btn:hover { opacity: 0.8; }
 
@@ -193,16 +189,16 @@
         .audio-wrapper {
             background-color: rgba(255,255,255,0.5);
             border-radius: 6px;
-            padding: 6px;
-            margin-bottom: 5px;
+            padding: 4px;
+            margin-bottom: 2px;
+            flex-shrink: 1;
         }
         
-        /* ボタン配置の調整 */
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 6px;
-            gap: 8px; /* ボタン間隔をあける */
+            margin-top: 4px;
+            gap: 4px;
         }
         
         .ctrl-btn {
@@ -210,24 +206,25 @@
             color: white;
             border: none;
             border-radius: 4px;
-            flex: 1; /* 均等幅 */
-            padding: 8px 0;
-            font-size: 12px;
+            flex: 1;
+            padding: 6px 0;
+            font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
+            white-space: nowrap;
         }
         
         .play-btn {
-            flex: 1.5; /* 再生ボタンを少し大きく */
-            background: linear-gradient(#007bff, #0056b3);
+            flex: 1.5;
+            background: linear-gradient(#007bff, #0056b3); /* 青 */
         }
 
         /* ループ用ボタン */
         .loop-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-            gap: 8px; /* ボタン間隔をあける */
+            margin-top: 4px;
+            gap: 4px;
         }
         .loop-btn {
             background-color: #888;
@@ -235,30 +232,32 @@
             border: none;
             border-radius: 4px;
             flex: 1;
-            padding: 6px 0;
-            font-size: 11px;
+            padding: 4px 0;
+            font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.2s;
         }
         
-        /* ループ設定時の色（赤） */
+        /* ループ設定時の色（パステルピンク） */
         .loop-active {
-            background-color: #d32f2f !important;
-            box-shadow: 0 0 5px rgba(211, 47, 47, 0.5);
+            background-color: #ffb6c1 !important; /* パステルピンク */
+            color: #d32f2f !important; /* 文字は見やすく赤系 */
+            border: 1px solid #ff69b4;
         }
 
         /* クイズ番号ボタン */
         .quiz-controls {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            gap: 4px;
             margin-top: 2px;
         }
         .btn-num {
             background: linear-gradient(#4caf50, #2e7d32);
-            font-size: 18px;
-            padding: 8px 0;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 6px 0;
             border-radius: 4px;
             color: white;
             border: none;
@@ -266,17 +265,30 @@
         }
 
         /* --- 色設定 --- */
-        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); padding: 8px 0; font-size: 16px; cursor: default; }
-        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); padding: 8px 0; font-size: 16px; cursor: default; }
+        .btn-audio-nat { background: linear-gradient(#8bc34a, #558b2f); padding: 5px 0; font-size: clamp(14px, 2vh, 20px); cursor: default; }
+        .btn-audio-slow { background: linear-gradient(#ffca28, #ff8f00); padding: 5px 0; font-size: clamp(14px, 2vh, 20px); cursor: default; }
         
-        .btn-green { background: linear-gradient(#4caf50, #2e7d32); }
-        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); }
-        .btn-japanese { background: linear-gradient(#ff7043, #d84315); }
+        .btn-green { background: linear-gradient(#4caf50, #2e7d32); margin-bottom: 2px;}
+        .btn-vocab { background: linear-gradient(#00bcd4, #0097a7); margin-bottom: 2px;}
+        .btn-japanese { background: linear-gradient(#ff7043, #d84315); margin-bottom: 2px;}
         .btn-compre { background: linear-gradient(#4caf50, #2e7d32); }
-        .btn-clear { background-color: #777; font-size: 14px; padding: 12px 0; margin-top: 15px; }
+        
+        /* All Clear と Reading Coach */
+        .btn-clear { background-color: #666; font-size: 14px; padding: 10px 0; margin-top: 5px; }
+        .btn-coach { background: linear-gradient(#9c27b0, #7b1fa2); font-size: 14px; padding: 10px 0; margin-top: 2px; }
+
+        /* スコア表示 */
+        #fluency-score {
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            margin-top: 2px;
+            font-size: 14px;
+            min-height: 20px;
+        }
 
         hr {
-            margin: 5px 0;
+            margin: 2px 0;
             border: 0;
             border-top: 1px dashed #bbb;
             width: 100%;
@@ -285,13 +297,15 @@
         /* --- レスポンシブ (スマホ横向き時) --- */
         @media (max-height: 500px) {
             .nav-container { height: 12%; }
-            .nav-btn { font-size: 12px; }
-            .sidebar { padding: 5px; gap: 8px; }
-            .btn { font-size: 12px; padding: 6px 0; }
-            .audio-wrapper { padding: 4px; }
-            .ctrl-btn, .loop-btn { padding: 5px 0; font-size: 10px; }
-            .btn-num { font-size: 14px; padding: 4px 0; }
-            #drag-handle { width: 20px; } /* スマホではハンドルを太く */
+            .sidebar { padding: 4px; gap: 2px; width: 220px;}
+            .btn { padding: 4px 0; font-size: 12px; }
+            .audio-wrapper { padding: 2px; margin-bottom: 2px; }
+            .audio-controls { margin-top: 2px; }
+            .ctrl-btn, .loop-btn { padding: 3px 0; font-size: 10px; }
+            .btn-num { font-size: 14px; padding: 3px 0; }
+            .btn-audio-nat, .btn-audio-slow { font-size: 14px; padding: 2px 0; }
+            /* ボタンがはみ出さないようにflex縮小を許可 */
+            .sidebar-group { gap: 1px; }
         }
     </style>
 </head>
@@ -335,9 +349,9 @@
                 <div class="audio-wrapper">
                     <div class="btn btn-audio-nat">Natural</div>
                     <div class="audio-controls">
-                        <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪ 5s</button>
-                        <button class="ctrl-btn play-btn" id="btn-play-nat" onclick="togglePlayPause('natural')">▶ 再生</button>
-                        <button class="ctrl-btn" onclick="seekAudio('natural', 5)">5s ⏩</button>
+                        <button class="ctrl-btn" onclick="seekAudio('natural', -5)">⏪</button>
+                        <button class="ctrl-btn play-btn" id="btn-play-nat" onclick="togglePlayPause('natural')">再生/一時停止</button>
+                        <button class="ctrl-btn" onclick="seekAudio('natural', 5)">⏩</button>
                     </div>
                     <div class="loop-controls">
                         <button id="btn-nat-start" class="loop-btn" onclick="setLoopStart('natural')">Start</button>
@@ -349,9 +363,9 @@
                 <div class="audio-wrapper">
                     <div class="btn btn-audio-slow">Slow</div>
                     <div class="audio-controls">
-                        <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪ 5s</button>
-                        <button class="ctrl-btn play-btn" id="btn-play-slow" onclick="togglePlayPause('slow')">▶ 再生</button>
-                        <button class="ctrl-btn" onclick="seekAudio('slow', 5)">5s ⏩</button>
+                        <button class="ctrl-btn" onclick="seekAudio('slow', -5)">⏪</button>
+                        <button class="ctrl-btn play-btn" id="btn-play-slow" onclick="togglePlayPause('slow')">再生/一時停止</button>
+                        <button class="ctrl-btn" onclick="seekAudio('slow', 5)">⏩</button>
                     </div>
                     <div class="loop-controls">
                         <button id="btn-slow-start" class="loop-btn" onclick="setLoopStart('slow')">Start</button>
@@ -363,7 +377,7 @@
 
             <hr>
 
-            <div class="sidebar-group">
+            <div class="sidebar-group" style="flex-grow: 1; justify-content: center;">
                 <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
                 <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
                 <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunciation 🎧</button>
@@ -384,6 +398,8 @@
 
             <div class="sidebar-group">
                 <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
+                <button class="btn btn-coach" id="btn-coach" onclick="toggleReadingCoach()">🎤 Reading Coach</button>
+                <div id="fluency-score"></div>
             </div>
         </div>
     </div>
@@ -399,7 +415,6 @@
     const appContainer = document.getElementById('appContainer');
     let isResizing = false;
 
-    // マウス/タッチ開始
     dragHandle.addEventListener('mousedown', startResize);
     dragHandle.addEventListener('touchstart', startResize, {passive: false});
 
@@ -407,8 +422,6 @@
         e.preventDefault();
         isResizing = true;
         document.body.style.cursor = 'col-resize';
-        
-        // イベントリスナー追加
         document.addEventListener('mousemove', resize);
         document.addEventListener('touchmove', resize, {passive: false});
         document.addEventListener('mouseup', stopResize);
@@ -417,19 +430,11 @@
 
     function resize(e) {
         if (!isResizing) return;
-        
-        // 座標取得 (マウス or タッチ)
         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
         const containerRect = appContainer.getBoundingClientRect();
-        
-        // 右端からの距離を計算 = サイドバーの幅
         let newSidebarWidth = containerRect.right - clientX;
-        
-        // 最小・最大幅の制限
-        if (newSidebarWidth < 150) newSidebarWidth = 150;
-        if (newSidebarWidth > containerRect.width * 0.6) newSidebarWidth = containerRect.width * 0.6;
-        
-        // 適用
+        if (newSidebarWidth < 180) newSidebarWidth = 180;
+        if (newSidebarWidth > containerRect.width * 0.7) newSidebarWidth = containerRect.width * 0.7;
         sidebar.style.width = newSidebarWidth + 'px';
     }
 
@@ -441,7 +446,6 @@
         document.removeEventListener('mouseup', stopResize);
         document.removeEventListener('touchend', stopResize);
     }
-
 
     // --- オーディオ＆ループ変数 ---
     const loopStates = {
@@ -543,11 +547,8 @@
         document.getElementById('ans4')
     ];
 
-    // ループ監視
     audioNat.addEventListener('timeupdate', () => checkLoop('natural'));
     audioSlow.addEventListener('timeupdate', () => checkLoop('slow'));
-    
-    // 再生終了時のボタンリセット
     audioNat.addEventListener('ended', () => updatePlayButtonUI('natural', false));
     audioSlow.addEventListener('ended', () => updatePlayButtonUI('slow', false));
     audioVocab.addEventListener('ended', () => { if(currentAudioType === 'vocab') currentAudioType = null; });
@@ -576,6 +577,8 @@
         stopAllAudio();
         clearAllAnswers();
         applyAnswerSettings(folder);
+        // Reset Fluency
+        document.getElementById('fluency-score').innerHTML = "";
     }
 
     function applyAnswerSettings(folder) {
@@ -610,40 +613,32 @@
         });
     }
 
-    // --- 新しいオーディオロジック (Play/Pauseトグル) ---
     function togglePlayPause(type) {
         let target = getAudioElement(type);
         if (!target) return;
 
-        // 別の音声が再生中なら停止
         if (currentAudioType && currentAudioType !== type) {
             let other = getAudioElement(currentAudioType);
             if(other) {
                 other.pause();
-                // UIリセット
                 updatePlayButtonUI(currentAudioType, false);
             }
         }
 
         if (target.paused) {
-            // 再生
             target.play().catch(e => console.log(e));
             currentAudioType = type;
             updatePlayButtonUI(type, true);
         } else {
-            // 一時停止
             target.pause();
-            // currentAudioType = null; // 停止位置を記憶するためnullにしない方が安全だが、ロジック上は自由
             updatePlayButtonUI(type, false);
         }
     }
 
-    // Pronunciation用（ボタン切り替えなし、従来通り）
     function toggleMainAudio(type) {
         let target = getAudioElement(type);
         if (!target) return;
         
-        // 他を停止
         if (currentAudioType && currentAudioType !== type) {
             let other = getAudioElement(currentAudioType);
             if(other) {
@@ -667,11 +662,11 @@
         const btn = document.getElementById(`btn-play-${type}`);
         if (!btn) return;
         if (isPlaying) {
-            btn.innerHTML = "⏸ 停止";
-            btn.style.background = "linear-gradient(#ff5252, #d32f2f)"; // 停止中は赤系
+            btn.innerHTML = "停止 ■";
+            btn.style.background = "#808080"; // グレー
         } else {
-            btn.innerHTML = "▶ 再生";
-            btn.style.background = "linear-gradient(#007bff, #0056b3)"; // 再生待機は青系
+            btn.innerHTML = "再生/一時停止";
+            btn.style.background = "linear-gradient(#007bff, #0056b3)";
         }
     }
 
@@ -714,19 +709,16 @@
         contentLayer.style.display = 'none';
         contentLayer.src = '';
         activeSlideType = null;
+        // スコアもクリア
+        document.getElementById('fluency-score').innerHTML = "";
     }
-
-    // --- Loop Logic ---
 
     function setLoopStart(type) {
         const audio = getAudioElement(type);
         if(!audio) return;
-        
         loopStates[type].start = audio.currentTime;
-        loopStates[type].end = null; // リセット
+        loopStates[type].end = null;
         loopStates[type].active = false;
-        
-        // UI更新: Startを赤く、Endを通常に
         document.getElementById(`btn-${type}-start`).classList.add('loop-active');
         document.getElementById(`btn-${type}-end`).classList.remove('loop-active');
     }
@@ -734,42 +726,89 @@
     function setLoopEnd(type) {
         const audio = getAudioElement(type);
         if(!audio) return;
-        
-        // Startが設定されてなければ無効
         if(loopStates[type].start === null) return; 
-
         loopStates[type].end = audio.currentTime;
-        
-        // EndがStartより前なら無視
         if(loopStates[type].end <= loopStates[type].start) return;
-
         loopStates[type].active = true;
-        
-        // 確実に再生＆ループ開始
-        if(audio.paused) {
-            togglePlayPause(type);
-        }
-
-        // UI更新: Endも赤くする
+        if(audio.paused) togglePlayPause(type);
         document.getElementById(`btn-${type}-end`).classList.add('loop-active');
     }
 
     function clearLoop(type) {
         loopStates[type] = { start: null, end: null, active: false };
-        
-        // UI更新: 両方元に戻す
         document.getElementById(`btn-${type}-start`).classList.remove('loop-active');
         document.getElementById(`btn-${type}-end`).classList.remove('loop-active');
     }
 
     function checkLoop(type) {
         if (!loopStates[type].active) return;
-        
         const audio = getAudioElement(type);
         if (audio.currentTime >= loopStates[type].end) {
             audio.currentTime = loopStates[type].start;
-            // 再生が止まっていたら再開
             if(audio.paused) audio.play();
+        }
+    }
+
+    // --- Reading Coach Functionality ---
+    let recognition = null;
+    let isRecording = false;
+
+    // ブラウザの互換性チェック
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US'; // 英語
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function() {
+            isRecording = true;
+            document.getElementById('btn-coach').innerHTML = "🔴 Listening... (Click to Stop)";
+            document.getElementById('btn-coach').style.background = "#ff5252";
+            document.getElementById('fluency-score').innerHTML = "";
+        };
+
+        recognition.onend = function() {
+            isRecording = false;
+            document.getElementById('btn-coach').innerHTML = "🎤 Reading Coach";
+            document.getElementById('btn-coach').style.background = "linear-gradient(#9c27b0, #7b1fa2)";
+        };
+
+        recognition.onresult = function(event) {
+            const result = event.results[0][0];
+            const transcript = result.transcript;
+            const confidence = result.confidence; // 0.0 - 1.0
+
+            // 簡易的なスコア計算 (信頼度ベース)
+            let score = Math.round(confidence * 100);
+            
+            // 発話が極端に短い場合はスコアを下げる調整
+            if (transcript.length < 10) score = Math.min(score, 50);
+
+            let msg = `Fluency Score: <span style="color:red; font-size:18px;">${score}%</span>`;
+            document.getElementById('fluency-score').innerHTML = msg;
+        };
+
+        recognition.onerror = function(event) {
+            isRecording = false;
+            document.getElementById('btn-coach').innerHTML = "🎤 Reading Coach";
+            document.getElementById('fluency-score').innerHTML = "Error: " + event.error;
+        };
+    } else {
+        document.getElementById('btn-coach').style.display = 'none'; // 非対応なら隠す
+    }
+
+    function toggleReadingCoach() {
+        if (!recognition) {
+            alert("Your browser does not support Speech Recognition.");
+            return;
+        }
+        
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            // 他の音声を止める
+            stopAllAudio();
+            recognition.start();
         }
     }
 </script>
