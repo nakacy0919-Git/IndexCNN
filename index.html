@@ -58,7 +58,7 @@
         }
         .nav-btn {
             background-color: #ddd;
-            border: 1px solid #fff; /* 白枠 */
+            border: 1px solid #fff;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
@@ -83,7 +83,7 @@
         /* --- アプリ本体レイアウト --- */
         .app-container {
             width: 99%;
-            flex-grow: 1;
+            flex-grow: 1; /* 残りの高さを埋める */
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -150,14 +150,15 @@
             min-width: 200px;
             max-width: 60%;
             background-color: #f5e6d3;
-            padding: 12px; /* パディング少しアップ */
+            padding: 8px 8px 8px 8px;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            gap: 15px; /* ボタン間隔を広げる */
-            overflow-y: auto; 
-            overflow-x: hidden;
+            justify-content: space-between; /* 上下に分散して配置（スクロール防止） */
+            gap: 2px;
+            overflow: hidden; /* スクロールさせない */
             flex-shrink: 0;
+            height: 100%; /* 親要素の高さいっぱい */
+            box-sizing: border-box;
         }
 
         /* グループごとのコンテナ */
@@ -165,72 +166,71 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* グループ内も少し広げる */
-            flex-shrink: 1;
+            gap: 4px;
+            flex-shrink: 1; /* 縮小可能にする */
         }
 
-        /* 共通ボタンスタイル (おしゃれグラデ + 白枠) */
+        /* 真ん中のボタン群は伸縮させる */
+        .group-flexible {
+            flex-grow: 1; 
+            justify-content: center;
+        }
+
+        /* 共通ボタンスタイル */
         .btn {
-            border: 2px solid white; /* 白枠 */
-            border-radius: 8px;
+            border: 2px solid white;
+            border-radius: 6px;
             cursor: pointer;
             color: white;
             font-weight: 900;
-            font-size: clamp(14px, 2.2vh, 18px); /* 文字大きく */
+            font-size: clamp(12px, 2vh, 18px);
             display: flex;
             justify-content: center;
             align-items: center;
             transition: all 0.2s;
             width: 100%;
-            padding: 10px 0;
+            padding: 8px 0; /* 少し詰める */
             white-space: nowrap;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* 影 */
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
-        .btn:hover { 
-            opacity: 0.9; 
-            transform: translateY(-1px);
-            box-shadow: 0 5px 8px rgba(0,0,0,0.3);
-        }
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:active { transform: translateY(1px); }
 
         /* オーディオ操作エリア */
         .audio-wrapper {
             background-color: rgba(255,255,255,0.6);
-            border-radius: 8px;
-            padding: 6px;
-            margin-bottom: 5px;
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 2px;
             box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
         }
         
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 6px;
-            gap: 6px;
+            margin-top: 4px;
+            gap: 4px;
         }
         
-        /* 制御ボタン (Rewind, Forward) */
+        /* 制御ボタン */
         .ctrl-btn {
             background: linear-gradient(135deg, #555, #333);
             color: white;
             border: 1px solid white;
-            border-radius: 6px;
+            border-radius: 4px;
             flex: 1;
-            padding: 8px 0;
-            font-size: clamp(11px, 1.6vh, 14px);
+            padding: 6px 0;
+            font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
             white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
         }
         
         /* 完全停止ボタン (グレー) */
         .stop-btn {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d); /* おしゃれなグレー */
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
             flex: 1.5;
         }
 
@@ -238,80 +238,79 @@
         .loop-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 6px;
-            gap: 6px;
+            margin-top: 4px;
+            gap: 4px;
         }
         .loop-btn {
             background: linear-gradient(135deg, #999, #777);
             color: white;
             border: 1px solid white;
-            border-radius: 6px;
+            border-radius: 4px;
             flex: 1;
-            padding: 6px 0;
-            font-size: clamp(11px, 1.6vh, 14px);
+            padding: 4px 0;
+            font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
             transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
         }
         
         /* ループ設定時の色（パステルピンク） */
         .loop-active {
-            background: linear-gradient(135deg, #ffb6c1, #ff69b4) !important;
-            color: #fff !important;
-            border: 2px solid #fff;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #ffc0cb, #ffb6c1) !important; /* パステルピンク */
+            color: #c62828 !important; /* 濃い赤文字 */
+            border: 2px solid #ff69b4 !important;
+            text-shadow: none !important;
+            font-weight: 900;
         }
 
         /* クイズ番号ボタン (2x2) */
         .quiz-controls {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2列 */
-            gap: 8px;
-            margin-top: 5px;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-top: 4px;
         }
         .btn-num {
             background: linear-gradient(135deg, #4caf50, #2e7d32);
-            font-size: 22px;
+            font-size: clamp(16px, 2.5vh, 22px);
             font-weight: bold;
-            padding: 12px 0;
-            border-radius: 6px;
+            padding: 8px 0;
+            border-radius: 4px;
             color: white;
             border: 2px solid white;
             cursor: pointer;
             box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
 
-        /* --- 各ボタンの色設定 (グラデーション) --- */
-        /* Natural/Slow (再生ボタン兼任) */
-        .btn-audio-nat { background: linear-gradient(135deg, #8bc34a, #558b2f); padding: 12px 0; font-size: 18px; }
-        .btn-audio-slow { background: linear-gradient(135deg, #ffca28, #ff8f00); padding: 12px 0; font-size: 18px; }
+        /* --- 各ボタンの色設定 --- */
+        .btn-audio-nat { background: linear-gradient(135deg, #8bc34a, #558b2f); }
+        .btn-audio-slow { background: linear-gradient(135deg, #ffca28, #ff8f00); }
         
-        .btn-green { background: linear-gradient(135deg, #4caf50, #2e7d32); }
-        .btn-vocab { background: linear-gradient(135deg, #00bcd4, #0097a7); }
-        .btn-japanese { background: linear-gradient(135deg, #ff7043, #d84315); }
+        .btn-green { background: linear-gradient(135deg, #4caf50, #2e7d32); margin-bottom: 2px;}
+        .btn-vocab { background: linear-gradient(135deg, #00bcd4, #0097a7); margin-bottom: 2px;}
+        .btn-japanese { background: linear-gradient(135deg, #ff7043, #d84315); margin-bottom: 2px;}
         .btn-compre { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
         
-        .btn-clear { background: linear-gradient(135deg, #7f8c8d, #566573); font-size: 16px; padding: 12px 0; margin-top: 10px; }
+        .btn-clear { background: linear-gradient(135deg, #7f8c8d, #566573); padding: 10px 0; margin-top: 5px; }
 
         hr {
-            margin: 10px 0;
+            margin: 4px 0;
             border: 0;
             border-top: 1px dashed #bbb;
             width: 100%;
         }
 
-        /* --- レスポンシブ (スマホ横向き時) --- */
+        /* --- レスポンシブ調整 --- */
         @media (max-height: 500px) {
             .nav-container { height: 12%; }
-            .sidebar { padding: 5px; gap: 8px; width: 220px;}
-            .btn { padding: 6px 0; font-size: 14px; border-width: 1.5px; }
-            .audio-wrapper { padding: 4px; margin-bottom: 4px; }
-            .audio-controls { margin-top: 4px; }
-            .ctrl-btn, .loop-btn { padding: 4px 0; font-size: 11px; }
-            .btn-num { font-size: 16px; padding: 6px 0; }
-            .btn-audio-nat, .btn-audio-slow { font-size: 16px; padding: 8px 0; }
-            .sidebar-group { gap: 4px; }
+            .sidebar { padding: 4px; gap: 2px; }
+            .btn { padding: 4px 0; font-size: 12px; border-width: 1px;}
+            .audio-wrapper { padding: 2px; margin-bottom: 2px; }
+            .audio-controls, .loop-controls { margin-top: 2px; }
+            .ctrl-btn, .loop-btn { padding: 3px 0; font-size: 10px; }
+            .btn-num { padding: 4px 0; }
+            .sidebar-group { gap: 1px; }
         }
     </style>
 </head>
@@ -383,7 +382,7 @@
 
             <hr>
 
-            <div class="sidebar-group" style="flex-grow: 1; justify-content: center;">
+            <div class="sidebar-group group-flexible">
                 <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
                 <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
                 <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunciation 🎧</button>
@@ -400,9 +399,6 @@
                     <button class="btn-num" onclick="toggleAnswer(3)">3</button>
                     <button class="btn-num" onclick="toggleAnswer(4)">4</button>
                 </div>
-            </div>
-
-            <div class="sidebar-group">
                 <button class="btn btn-clear" onclick="clearAllAnswers()">ALL CLEAR</button>
             </div>
         </div>
@@ -615,11 +611,12 @@
         });
     }
 
-    // --- 新しいオーディオロジック (Play/Pauseトグル) ---
+    // --- メインボタンでの再生/一時停止 ---
     function togglePlayPause(type) {
         let target = getAudioElement(type);
         if (!target) return;
 
+        // 他の音声を停止
         if (currentAudioType && currentAudioType !== type) {
             let other = getAudioElement(currentAudioType);
             if(other) {
@@ -638,7 +635,7 @@
         }
     }
 
-    // Pronunciation用（ボタン切り替えなし、従来通り）
+    // Pronunciation用
     function toggleMainAudio(type) {
         let target = getAudioElement(type);
         if (!target) return;
@@ -662,8 +659,8 @@
         }
     }
 
-    // UI更新: Play/Pauseボタンの表示切替
     function updatePlayButtonUI(type, isPlaying) {
+        // Natural/SlowのメインボタンID
         const btn = document.getElementById(`btn-main-${type}`);
         if (!btn) return;
         
@@ -671,16 +668,8 @@
         
         if (isPlaying) {
             btn.innerHTML = `${label} ⏸`;
-            // 再生中はアクティブなグラデーション
-            btn.style.background = (type === 'natural') 
-                ? "linear-gradient(135deg, #7cb342, #558b2f)" 
-                : "linear-gradient(135deg, #ffb300, #ff8f00)";
         } else {
             btn.innerHTML = `${label} ▶`;
-            // 停止中は元のグラデーション
-            btn.style.background = (type === 'natural')
-                ? "linear-gradient(135deg, #8bc34a, #558b2f)"
-                : "linear-gradient(135deg, #ffca28, #ff8f00)";
         }
     }
 
@@ -698,11 +687,12 @@
         return null;
     }
 
+    // 完全停止(Stop)ボタン用
     function stopAudioOnly(type) {
         let target = getAudioElement(type);
         if (target) {
             target.pause();
-            target.currentTime = 0;
+            target.currentTime = 0; // 0秒に戻す
             if(currentAudioType === type) currentAudioType = null;
             updatePlayButtonUI(type, false);
         }
@@ -735,12 +725,17 @@
         activeSlideType = null;
     }
 
+    // --- Loop Functions with Visual Feedback ---
+
     function setLoopStart(type) {
         const audio = getAudioElement(type);
         if(!audio) return;
+        
         loopStates[type].start = audio.currentTime;
         loopStates[type].end = null;
         loopStates[type].active = false;
+        
+        // パステルピンク適用
         document.getElementById(`btn-${type}-start`).classList.add('loop-active');
         document.getElementById(`btn-${type}-end`).classList.remove('loop-active');
     }
@@ -748,22 +743,32 @@
     function setLoopEnd(type) {
         const audio = getAudioElement(type);
         if(!audio) return;
+        
         if(loopStates[type].start === null) return; 
+
         loopStates[type].end = audio.currentTime;
+        
         if(loopStates[type].end <= loopStates[type].start) return;
+
         loopStates[type].active = true;
-        if(audio.paused) togglePlayPause(type);
+        
+        if(audio.paused) {
+            togglePlayPause(type);
+        }
+
         document.getElementById(`btn-${type}-end`).classList.add('loop-active');
     }
 
     function clearLoop(type) {
         loopStates[type] = { start: null, end: null, active: false };
+        
         document.getElementById(`btn-${type}-start`).classList.remove('loop-active');
         document.getElementById(`btn-${type}-end`).classList.remove('loop-active');
     }
 
     function checkLoop(type) {
         if (!loopStates[type].active) return;
+        
         const audio = getAudioElement(type);
         if (audio.currentTime >= loopStates[type].end) {
             audio.currentTime = loopStates[type].start;
