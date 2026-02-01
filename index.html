@@ -129,10 +129,10 @@
             z-index: 10;
         }
 
-        /* --- リサイズハンドル (視認性向上) --- */
+        /* --- リサイズハンドル --- */
         #drag-handle {
-            width: 18px; /* 幅を広げて操作しやすく */
-            background: linear-gradient(to right, #ddd, #bbb, #ddd); /* 立体感 */
+            width: 18px;
+            background: linear-gradient(to right, #ddd, #bbb, #ddd);
             cursor: col-resize;
             display: flex;
             justify-content: center;
@@ -143,7 +143,6 @@
             border-left: 1px solid #999;
             border-right: 1px solid #999;
         }
-        /* ハンドルのグリップ線 (太くして目立たせる) */
         #drag-handle::after {
             content: "";
             width: 4px;
@@ -154,8 +153,8 @@
 
         /* --- 右側：サイドバー --- */
         .sidebar {
-            width: 220px; /* 初期幅を縮小してメイン画面を広く */
-            min-width: 180px;
+            width: 200px; /* デフォルト幅を狭くしてiPadでメイン画面を広く */
+            min-width: 160px;
             max-width: 60%;
             background-color: #f5e6d3;
             padding: 6px;
@@ -182,7 +181,7 @@
             justify-content: center;
         }
 
-        /* 共通ボタンスタイル */
+        /* 共通ボタンスタイル (Script, Vocab等) - 縦幅変更なし */
         .btn {
             border: 2px solid white;
             border-radius: 6px;
@@ -193,7 +192,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px; /* アイコンとテキストの間隔 */
+            gap: 8px;
             transition: all 0.1s;
             width: 100%;
             padding: clamp(6px, 1.2vh, 10px) 0;
@@ -215,21 +214,23 @@
             flex-shrink: 1;
         }
         
+        /* コントロールボタンの配置 (間隔を広げる) */
         .audio-controls, .loop-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 3px;
-            gap: 3px;
+            margin-top: 4px;
+            gap: 10px; /* 間隔を広げた */
         }
         
-        /* 制御ボタン */
+        /* 制御ボタン (縦幅を広げる) */
         .ctrl-btn, .loop-btn {
             background: linear-gradient(135deg, #555, #333);
             color: white;
             border: 1px solid white;
             border-radius: 4px;
             flex: 1;
-            padding: clamp(4px, 1vh, 6px) 0;
+            /* 縦幅を広げる指定 */
+            padding: 14px 0; 
             font-size: clamp(9px, 1.2vh, 12px);
             cursor: pointer;
             font-weight: bold;
@@ -294,6 +295,14 @@
             width: 100%;
             flex-shrink: 0;
         }
+        
+        /* アイコン用SVGスタイル */
+        .icon-svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -334,15 +343,17 @@
             <div class="sidebar-group">
                 <div class="audio-wrapper">
                     <button class="btn btn-audio-nat" id="btn-main-natural" onclick="togglePlayPause('natural')">
-                        Natural 
+                        Natural <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </button>
                     <div class="audio-controls">
                         <button class="ctrl-btn" onclick="seekAudio('natural', -5)">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg> 5s
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
                         </button>
-                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('natural')">■ Stop</button>
+                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('natural')">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                        </button>
                         <button class="ctrl-btn" onclick="seekAudio('natural', 5)">
-                            5s <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
                         </button>
                     </div>
                     <div class="loop-controls">
@@ -356,15 +367,17 @@
             <div class="sidebar-group">
                 <div class="audio-wrapper">
                     <button class="btn btn-audio-slow" id="btn-main-slow" onclick="togglePlayPause('slow')">
-                        Slow 
+                        Slow <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </button>
                     <div class="audio-controls">
                         <button class="ctrl-btn" onclick="seekAudio('slow', -5)">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg> 5s
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
                         </button>
-                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('slow')">■ Stop</button>
+                        <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('slow')">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                        </button>
                         <button class="ctrl-btn" onclick="seekAudio('slow', 5)">
-                            5s <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
                         </button>
                     </div>
                     <div class="loop-controls">
@@ -404,13 +417,9 @@
     <audio id="audioVocab"></audio>
 
 <script>
-    // --- SVGアイコン定義 (シンプル白枠なし) ---
-    const iconPlay = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
-    const iconPause = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-
-    // 初期化でアイコンセット
-    document.getElementById('btn-main-natural').innerHTML = `Natural ${iconPlay}`;
-    document.getElementById('btn-main-slow').innerHTML = `Slow ${iconPlay}`;
+    // --- SVG定義 ---
+    const iconPlay = '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    const iconPause = '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
     // --- ドラッグによるサイズ調整機能 ---
     const dragHandle = document.getElementById('drag-handle');
@@ -474,7 +483,6 @@
     let currentAudioType = null;
     let activeSlideType = null;
 
-    // ファイル名
     const fileNames = {
         main: 'main.png',
         transcript: 'transcript.png',
