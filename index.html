@@ -153,7 +153,7 @@
 
         /* --- 右側：サイドバー --- */
         .sidebar {
-            width: 200px; /* デフォルト幅を狭くしてiPadでメイン画面を広く */
+            width: 200px;
             min-width: 160px;
             max-width: 60%;
             background-color: #f5e6d3;
@@ -181,7 +181,7 @@
             justify-content: center;
         }
 
-        /* 共通ボタンスタイル (Script, Vocab等) - 縦幅変更なし */
+        /* 共通ボタンスタイル */
         .btn {
             border: 2px solid white;
             border-radius: 6px;
@@ -204,6 +204,11 @@
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn:active { transform: translateY(1px); }
 
+        /* 再生ボタン専用 (文字大きく) */
+        .btn-audio-nat, .btn-audio-slow {
+            font-size: clamp(14px, 2.5vh, 20px) !important; /* 強制的に大きく */
+        }
+
         /* オーディオエリア */
         .audio-wrapper {
             background-color: rgba(255,255,255,0.6);
@@ -214,24 +219,22 @@
             flex-shrink: 1;
         }
         
-        /* コントロールボタンの配置 (間隔を広げる) */
         .audio-controls, .loop-controls {
             display: flex;
             justify-content: space-between;
             margin-top: 4px;
-            gap: 10px; /* 間隔を広げた */
+            gap: 10px;
         }
         
-        /* 制御ボタン (縦幅を広げる) */
+        /* 制御ボタン */
         .ctrl-btn, .loop-btn {
             background: linear-gradient(135deg, #555, #333);
             color: white;
             border: 1px solid white;
             border-radius: 4px;
             flex: 1;
-            /* 縦幅を広げる指定 */
             padding: 14px 0; 
-            font-size: clamp(9px, 1.2vh, 12px);
+            font-size: clamp(10px, 1.3vh, 14px); /* 少し大きく */
             cursor: pointer;
             font-weight: bold;
             white-space: nowrap;
@@ -251,7 +254,6 @@
             background: linear-gradient(135deg, #999, #777);
         }
         
-        /* ループ設定時の色 */
         .loop-active {
             background: #ffc0cb !important;
             background-image: none !important;
@@ -347,13 +349,13 @@
                     </button>
                     <div class="audio-controls">
                         <button class="ctrl-btn" onclick="seekAudio('natural', -5)">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg> 5s
                         </button>
                         <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('natural')">
                             <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
                         </button>
                         <button class="ctrl-btn" onclick="seekAudio('natural', 5)">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+                            5s <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
                         </button>
                     </div>
                     <div class="loop-controls">
@@ -371,13 +373,13 @@
                     </button>
                     <div class="audio-controls">
                         <button class="ctrl-btn" onclick="seekAudio('slow', -5)">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg> 5s
                         </button>
                         <button class="ctrl-btn stop-btn" onclick="stopAudioOnly('slow')">
                             <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
                         </button>
                         <button class="ctrl-btn" onclick="seekAudio('slow', 5)">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+                            5s <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
                         </button>
                     </div>
                     <div class="loop-controls">
@@ -509,8 +511,6 @@
 
     audioNat.addEventListener('timeupdate', () => checkLoop('natural'));
     audioSlow.addEventListener('timeupdate', () => checkLoop('slow'));
-    
-    // 再生終了時
     audioNat.addEventListener('ended', () => updatePlayButtonUI('natural', false));
     audioSlow.addEventListener('ended', () => updatePlayButtonUI('slow', false));
     audioVocab.addEventListener('ended', () => { if(currentAudioType === 'vocab') currentAudioType = null; });
@@ -618,7 +618,6 @@
         }
     }
 
-    // UI更新 (SVGアイコン使用)
     function updatePlayButtonUI(type, isPlaying) {
         if (type !== 'natural' && type !== 'slow') return;
 
