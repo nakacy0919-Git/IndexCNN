@@ -226,15 +226,15 @@
             gap: 10px;
         }
         
-        /* 制御ボタン */
+     /* 制御ボタン */
         .ctrl-btn, .loop-btn {
             background: linear-gradient(135deg, #555, #333);
             color: white;
             border: 1px solid white;
             border-radius: 4px;
             flex: 1;
-            padding: 14px 0; 
-            font-size: clamp(10px, 1.3vh, 14px); /* 少し大きく */
+            padding: 14px 0; /* ← 縦並びにするなら、ここの余白は少し減らしても良いかもしれません（例: 8px 0） */
+            font-size: clamp(9px, 1.2vh, 12px);
             cursor: pointer;
             font-weight: bold;
             white-space: nowrap;
@@ -242,7 +242,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 4px;
+            gap: 4px; /* アイコンと文字の間隔 */
+            
+            /* ▼▼▼ この1行を追加してください ▼▼▼ */
+            flex-direction: column; 
         }
         
         .stop-btn {
@@ -731,4 +734,5 @@
 
 </body>
 </html>
+
 
