@@ -83,7 +83,7 @@
         /* --- アプリ本体レイアウト --- */
         .app-container {
             width: 99%;
-            flex-grow: 1; /* 残りの高さを埋める */
+            flex-grow: 1;
             background-color: white;
             display: flex;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -150,14 +150,15 @@
             min-width: 200px;
             max-width: 60%;
             background-color: #f5e6d3;
-            padding: 8px 8px 8px 8px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* 上下に分散して配置（スクロール防止） */
+            justify-content: space-between; /* 要素を上下に均等配置して画面内に収める */
             gap: 2px;
-            overflow: hidden; /* スクロールさせない */
+            overflow-y: auto; 
+            overflow-x: hidden;
             flex-shrink: 0;
-            height: 100%; /* 親要素の高さいっぱい */
+            height: 100%;
             box-sizing: border-box;
         }
 
@@ -167,13 +168,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            flex-shrink: 1; /* 縮小可能にする */
-        }
-
-        /* 真ん中のボタン群は伸縮させる */
-        .group-flexible {
-            flex-grow: 1; 
-            justify-content: center;
+            flex-shrink: 1;
         }
 
         /* 共通ボタンスタイル */
@@ -189,9 +184,9 @@
             align-items: center;
             transition: all 0.2s;
             width: 100%;
-            padding: 8px 0; /* 少し詰める */
+            padding: 10px 0;
             white-space: nowrap;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -200,8 +195,8 @@
         /* オーディオ操作エリア */
         .audio-wrapper {
             background-color: rgba(255,255,255,0.6);
-            border-radius: 6px;
-            padding: 4px;
+            border-radius: 8px;
+            padding: 6px;
             margin-bottom: 2px;
             box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
         }
@@ -209,8 +204,8 @@
         .audio-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
-            gap: 4px;
+            margin-top: 6px;
+            gap: 6px;
         }
         
         /* 制御ボタン */
@@ -220,7 +215,7 @@
             border: 1px solid white;
             border-radius: 4px;
             flex: 1;
-            padding: 6px 0;
+            padding: 8px 0;
             font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
@@ -238,8 +233,8 @@
         .loop-controls {
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
-            gap: 4px;
+            margin-top: 6px;
+            gap: 6px;
         }
         .loop-btn {
             background: linear-gradient(135deg, #999, #777);
@@ -247,7 +242,7 @@
             border: 1px solid white;
             border-radius: 4px;
             flex: 1;
-            padding: 4px 0;
+            padding: 6px 0;
             font-size: clamp(10px, 1.5vh, 14px);
             cursor: pointer;
             font-weight: bold;
@@ -255,13 +250,13 @@
             box-shadow: 0 2px 3px rgba(0,0,0,0.2);
         }
         
-        /* ループ設定時の色（パステルピンク） */
+        /* ループ設定時の色（パステルピンク - background-imageを無効化して色を適用） */
         .loop-active {
-            background: linear-gradient(135deg, #ffc0cb, #ffb6c1) !important; /* パステルピンク */
+            background: none !important; /* グラデーションを削除 */
+            background-color: #ffc0cb !important; /* パステルピンク */
             color: #c62828 !important; /* 濃い赤文字 */
             border: 2px solid #ff69b4 !important;
             text-shadow: none !important;
-            font-weight: 900;
         }
 
         /* クイズ番号ボタン (2x2) */
@@ -304,7 +299,7 @@
         /* --- レスポンシブ調整 --- */
         @media (max-height: 500px) {
             .nav-container { height: 12%; }
-            .sidebar { padding: 4px; gap: 2px; }
+            .sidebar { padding: 4px; gap: 2px; width: 220px; }
             .btn { padding: 4px 0; font-size: 12px; border-width: 1px;}
             .audio-wrapper { padding: 2px; margin-bottom: 2px; }
             .audio-controls, .loop-controls { margin-top: 2px; }
@@ -382,7 +377,7 @@
 
             <hr>
 
-            <div class="sidebar-group group-flexible">
+            <div class="sidebar-group" style="flex-grow: 1; justify-content: center;">
                 <button class="btn btn-green" onclick="toggleSlide('transcript')">Script</button>
                 <button class="btn btn-green" onclick="toggleSlide('newwords')">Vocabulary</button>
                 <button class="btn btn-vocab" onclick="toggleMainAudio('vocab')">Pronunciation 🎧</button>
@@ -659,17 +654,18 @@
         }
     }
 
+    // メインボタンのテキスト切り替え
     function updatePlayButtonUI(type, isPlaying) {
-        // Natural/SlowのメインボタンID
+        // ID修正: btn-main-nat / btn-main-slow
         const btn = document.getElementById(`btn-main-${type}`);
         if (!btn) return;
         
         const label = type === 'natural' ? 'Natural' : 'Slow';
         
         if (isPlaying) {
-            btn.innerHTML = `${label} ⏸`;
+            btn.innerHTML = `${label} ⏸`; // 一時停止アイコン
         } else {
-            btn.innerHTML = `${label} ▶`;
+            btn.innerHTML = `${label} ▶`; // 再生アイコン
         }
     }
 
@@ -725,7 +721,7 @@
         activeSlideType = null;
     }
 
-    // --- Loop Functions with Visual Feedback ---
+    // --- Loop Functions with Fixed Colors ---
 
     function setLoopStart(type) {
         const audio = getAudioElement(type);
